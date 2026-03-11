@@ -70,8 +70,16 @@ const LastReviewPage = () => {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar />
       <main className="flex-1 p-8 overflow-y-auto">
-        <h1 className="text-2xl font-bold text-foreground mb-1">Last Customer Review</h1>
-        <p className="text-sm text-muted-foreground mb-8">Most recent voice feedback received via ElevenLabs</p>
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground mb-1">Last Customer Review</h1>
+            <p className="text-sm text-muted-foreground">Most recent voice feedback received via ElevenLabs</p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+            Live updates enabled
+          </div>
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>
