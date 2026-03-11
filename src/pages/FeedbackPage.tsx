@@ -125,6 +125,7 @@ const FeedbackPage = () => {
   }, [conversation]);
 
   const stopConversation = useCallback(async () => {
+    setStatusMessage("Ending conversation...");
     await conversation.endSession();
   }, [conversation]);
 
