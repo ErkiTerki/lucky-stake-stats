@@ -99,29 +99,26 @@ const FeedbackPage = () => {
     setIsConnecting(true);
     transcriptRef.current = "";
     setSubmitted(false);
+    setConversationEnded(false);
     setParsedEntries([]);
     setError("");
+    setStatusMessage("Requesting microphone access...");
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
+      setStatusMessage("Connecting to voice assistant...");
 
-      const tokenResp = await fetch(TOKEN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({}),
-      });
-      const tokenData = await tokenResp.json();
-      if (!tokenData.token) throw new Error("No token received");
+      const { data, error } = await supabase.functions.invoke("elevenlabs-token");
+      if (error) throw new Error(error.message || "Failed to get conversation token");
+      if (!data?.token) throw new Error("No token received");
 
       await conversation.startSession({
-        conversationToken: tokenData.token,
+        conversationToken: data.token,
         connectionType: "webrtc",
       });
     } catch (err: any) {
       console.error("Failed to start conversation:", err);
       setError(err.message || "Failed to connect. Please try again.");
+      setStatusMessage("Failed to connect");
     } finally {
       setIsConnecting(false);
     }
