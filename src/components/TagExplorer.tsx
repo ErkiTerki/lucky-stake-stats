@@ -37,7 +37,7 @@ const TagExplorer = ({ data, filterType, filterGroup }: TagExplorerProps) => {
       <p className="text-xs text-muted-foreground mb-4">Click to expand details</p>
       <div className="space-y-px max-h-[420px] overflow-y-auto">
         {sorted.map((item) => {
-          const key = `${item.type}-${item.group}-${item.tag}-${item.count}`;
+          const key = `${item.type}-${item.group}-${item.tag}-${item.count}-${item.longDescription}`;
           const isExpanded = expandedTag === key;
           const isPositive = item.type.includes("apprécié");
 

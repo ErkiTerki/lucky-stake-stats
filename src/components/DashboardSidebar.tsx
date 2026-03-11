@@ -1,8 +1,9 @@
-import { LayoutDashboard, MessageCircle } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Swords } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
   { label: "Overview", icon: LayoutDashboard, path: "/" },
+  { label: "Competitors", icon: Swords, path: "/competitors" },
   { label: "Chat", icon: MessageCircle, path: "/chat" },
 ];
 
