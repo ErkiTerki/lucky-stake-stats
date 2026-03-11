@@ -8,6 +8,7 @@ import ChatPage from "./pages/ChatPage.tsx";
 import CompetitorsPage from "./pages/CompetitorsPage.tsx";
 import StrategyPage from "./pages/StrategyPage.tsx";
 import FeedbackPage from "./pages/FeedbackPage.tsx";
+import LastReviewPage from "./pages/LastReviewPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/competitors" element={<CompetitorsPage />} />
           <Route path="/strategy" element={<StrategyPage />} />
           <Route path="/feedback" element={<FeedbackPage />} />
+          <Route path="/last-review" element={<LastReviewPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
