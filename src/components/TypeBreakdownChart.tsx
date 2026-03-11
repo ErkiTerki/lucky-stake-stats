@@ -39,16 +39,16 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="glass-card p-6"
     >
-      <h3 className="text-lg font-semibold mb-1">By Category</h3>
+      <h3 className="text-lg font-semibold mb-1 text-foreground">By Category</h3>
       <p className="text-muted-foreground text-sm mb-6">Positive vs negative feedback per theme</p>
       <div className="h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 20, right: 20 }}>
-            <XAxis type="number" tick={{ fill: "hsl(220, 10%, 55%)", fontSize: 12 }} axisLine={false} tickLine={false} />
+            <XAxis type="number" tick={{ fill: "hsl(220, 10%, 50%)", fontSize: 12 }} axisLine={false} tickLine={false} />
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fill: "hsl(40, 15%, 80%)", fontSize: 12 }}
+              tick={{ fill: "hsl(220, 12%, 75%)", fontSize: 12 }}
               axisLine={false}
               tickLine={false}
               width={160}
@@ -61,8 +61,8 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
                 </span>
               )}
             />
-            <Bar dataKey="positive" stackId="a" fill="hsl(152, 60%, 42%)" radius={[0, 0, 0, 0]} barSize={20} />
-            <Bar dataKey="negative" stackId="a" fill="hsl(0, 72%, 55%)" radius={[0, 6, 6, 0]} barSize={20} />
+            <Bar dataKey="positive" stackId="a" fill="hsl(160, 45%, 62%)" radius={[0, 0, 0, 0]} barSize={20} />
+            <Bar dataKey="negative" stackId="a" fill="hsl(0, 55%, 68%)" radius={[0, 6, 6, 0]} barSize={20} />
           </BarChart>
         </ResponsiveContainer>
       </div>
