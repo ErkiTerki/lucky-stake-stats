@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      feedback_entries: {
+        Row: {
+          children: Json
+          count: number
+          created_at: string
+          group: string
+          id: string
+          long_description: string
+          source: string
+          tag: string
+          type: string
+        }
+        Insert: {
+          children?: Json
+          count?: number
+          created_at?: string
+          group: string
+          id?: string
+          long_description?: string
+          source?: string
+          tag: string
+          type: string
+        }
+        Update: {
+          children?: Json
+          count?: number
+          created_at?: string
+          group?: string
+          id?: string
+          long_description?: string
+          source?: string
+          tag?: string
+          type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MessageSquare, ThumbsUp, ThumbsDown, BarChart3, Search, TrendingUp, TrendingDown } from "lucide-react";
 import feedbackData from "@/data/feedback.json";
 import KPICard from "@/components/KPICard";
@@ -8,6 +8,7 @@ import GroupDonutChart from "@/components/GroupDonutChart";
 import TagExplorer from "@/components/TagExplorer";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { translateGroup, translateTag } from "@/lib/translations";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FeedbackItem {
   type: string;
@@ -18,11 +19,41 @@ interface FeedbackItem {
   children: { count: number; long_description: string }[];
 }
 
-const allData = feedbackData as FeedbackItem[];
+const staticData = feedbackData as FeedbackItem[];
 
 const Index = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterGroup, setFilterGroup] = useState("all");
+  const [dbEntries, setDbEntries] = useState<FeedbackItem[]>([]);
+
+  // Fetch DB entries and subscribe to realtime
+  useEffect(() => {
+    const fetchEntries = async () => {
+      const { data } = await supabase.from("feedback_entries").select("*");
+      if (data) {
+        setDbEntries(data.map((e: any) => ({
+          type: e.type,
+          group: e.group,
+          tag: e.tag,
+          count: e.count,
+          longDescription: e.long_description,
+          children: typeof e.children === "string" ? JSON.parse(e.children) : (e.children || []),
+        })));
+      }
+    };
+    fetchEntries();
+
+    const channel = supabase
+      .channel("feedback_entries_changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "feedback_entries" }, () => {
+        fetchEntries();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const allData = useMemo(() => [...staticData, ...dbEntries], [dbEntries]);
 
   const isTypeFiltered = filterType !== "all";
   const isGroupFiltered = filterGroup !== "all";
