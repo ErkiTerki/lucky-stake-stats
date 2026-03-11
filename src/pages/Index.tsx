@@ -183,8 +183,8 @@ const Index = () => {
             {!isFiltered ? (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <KPICard title="Total Mentions" value={stats.globalTotal} icon={MessageSquare} subtitle={`${allData.length} themes`} />
-                <KPICard title="Appreciated" value={stats.globalPos} icon={ThumbsUp} trend="positive" subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`} />
-                <KPICard title="Irritants" value={stats.globalNeg} icon={ThumbsDown} trend="negative" subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`} />
+                <KPICard title="Positive" value={stats.globalPos} icon={ThumbsUp} trend="positive" subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`} />
+                <KPICard title="Negative" value={stats.globalNeg} icon={ThumbsDown} trend="negative" subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`} />
                 <KPICard title="Positive Ratio" value={`${((stats.globalPos / stats.globalTotal) * 100).toFixed(1)}%`} icon={BarChart3} trend="positive" subtitle="Satisfaction score" />
               </div>
             ) : (
