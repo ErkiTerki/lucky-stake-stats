@@ -22,7 +22,7 @@ const SentimentBar = ({ positive, negative }: SentimentBarProps) => {
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full" style={{ background: "hsl(var(--chart-negative))" }} />
-          {negPercent.toFixed(1)}% irritant ({negative.toLocaleString()})
+          {negPercent.toFixed(1)}% Irritant ({negative.toLocaleString()})
         </div>
       </div>
     </div>
