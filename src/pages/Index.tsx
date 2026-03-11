@@ -59,10 +59,10 @@ const Index = () => {
       shareLabel = "of all mentions";
     } else if (isAppreciated && isGroupFiltered) {
       shareDenominator = globalPos;
-      shareLabel = "of all Appreciated";
+      shareLabel = "of all Positive";
     } else if (isIrritant && isGroupFiltered) {
       shareDenominator = globalNeg;
-      shareLabel = "of all Irritants";
+      shareLabel = "of all Negative";
     } else if (isGroupFiltered) {
       shareDenominator = globalTotal;
       shareLabel = "of all mentions";
@@ -122,10 +122,10 @@ const Index = () => {
   let pageTitle = "Dashboard";
   let pageSubtitle = "Customer feedback analysis overview";
   if (isAppreciated && isGroupFiltered) {
-    pageTitle = `Appreciated — ${translateGroup(filterGroup)}`;
+    pageTitle = `Positive — ${translateGroup(filterGroup)}`;
     pageSubtitle = "Positive feedback for this group";
   } else if (isIrritant && isGroupFiltered) {
-    pageTitle = `Pain Points — ${translateGroup(filterGroup)}`;
+    pageTitle = `Negative — ${translateGroup(filterGroup)}`;
     pageSubtitle = "Areas of frustration in this group";
   } else if (isAppreciated) {
     pageTitle = "What Customers Love";
@@ -156,8 +156,8 @@ const Index = () => {
               className="bg-card text-foreground text-xs rounded-lg px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="all">All types</option>
-              <option value="apprécié">Appreciated</option>
-              <option value="irritant">Irritants</option>
+              <option value="apprécié">Positive</option>
+              <option value="irritant">Negative</option>
             </select>
             <select
               value={filterGroup}
@@ -183,14 +183,14 @@ const Index = () => {
             {!isFiltered ? (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <KPICard title="Total Mentions" value={stats.globalTotal} icon={MessageSquare} subtitle={`${allData.length} themes`} />
-                <KPICard title="Appreciated" value={stats.globalPos} icon={ThumbsUp} trend="positive" subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`} />
-                <KPICard title="Irritants" value={stats.globalNeg} icon={ThumbsDown} trend="negative" subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`} />
+                <KPICard title="Positive" value={stats.globalPos} icon={ThumbsUp} trend="positive" subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`} />
+                <KPICard title="Negative" value={stats.globalNeg} icon={ThumbsDown} trend="negative" subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`} />
                 <KPICard title="Positive Ratio" value={`${((stats.globalPos / stats.globalTotal) * 100).toFixed(1)}%`} icon={BarChart3} trend="positive" subtitle="Satisfaction score" />
               </div>
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                 <KPICard
-                  title={isAppreciated ? "Appreciated Mentions" : isIrritant ? "Irritant Mentions" : "Mentions"}
+                  title={isAppreciated ? "Positive Mentions" : isIrritant ? "Negative Mentions" : "Mentions"}
                   value={stats.filteredTotal}
                   icon={isAppreciated ? ThumbsUp : isIrritant ? ThumbsDown : MessageSquare}
                   trend={isAppreciated ? "positive" : isIrritant ? "negative" : "neutral"}
@@ -223,7 +223,7 @@ const Index = () => {
           {isTypeFiltered && (
             <div className="bg-card rounded-xl border border-border p-5 mb-5">
               <h3 className="text-sm font-semibold text-foreground mb-4">
-                {isAppreciated ? "Top Appreciated Themes" : "Top Irritant Themes"}
+                {isAppreciated ? "Top Positive Themes" : "Top Negative Themes"}
               </h3>
               <div className="space-y-3">
                 {stats.topFiltered.map((item, i) => (

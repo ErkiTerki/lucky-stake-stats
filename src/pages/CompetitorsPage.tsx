@@ -152,7 +152,7 @@ const CompetitorsPage = () => {
             <p className="text-sm text-foreground leading-relaxed mb-4">
               Across <span className="font-semibold font-mono">{analysis.totalMentions.toLocaleString()}</span> customer
               mentions that reference competitors, <span className="font-semibold text-destructive">{negPct}%</span> are
-              unfavorable comparisons where customers feel competitors do better, while{" "}
+              negative comparisons where customers feel competitors do better, while{" "}
               <span className="font-semibold text-primary">{posPct}%</span> are areas where customers think you outperform.
             </p>
 
@@ -240,7 +240,7 @@ const CompetitorsPage = () => {
                 Where Competitors Win
               </h2>
               {analysis.weaknesses.length === 0 ? (
-                <p className="text-xs text-muted-foreground italic">No unfavorable competitor comparisons found.</p>
+                <p className="text-xs text-muted-foreground italic">No negative competitor comparisons found.</p>
               ) : (
                 <div className="space-y-4">
                   {analysis.weaknesses.slice(0, 8).map((w) => (
@@ -296,7 +296,7 @@ const CompetitorsPage = () => {
                     <span className={`text-[10px] font-medium uppercase px-1.5 py-0.5 rounded ${
                       item.type.includes("apprécié") ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
                     }`}>
-                      {item.type.includes("apprécié") ? "Favorable" : "Unfavorable"}
+                      {item.type.includes("apprécié") ? "Positive" : "Negative"}
                     </span>
                     <span className="text-xs font-medium text-foreground">{translateTag(item.tag)}</span>
                     <span className="text-xs text-muted-foreground">· {translateGroup(item.group)}</span>
