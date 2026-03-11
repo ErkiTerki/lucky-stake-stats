@@ -29,9 +29,13 @@ const FeedbackPage = () => {
       }
     },
     onMessage: (message: any) => {
+      console.log("ElevenLabs message:", JSON.stringify(message));
       if (message.type === "user_transcript") {
         const text = message.user_transcription_event?.user_transcript || "";
-        transcriptRef.current += " " + text;
+        if (text.trim()) transcriptRef.current += "\nClient: " + text;
+      } else if (message.type === "agent_response") {
+        const text = message.agent_response_event?.agent_response || "";
+        if (text.trim()) transcriptRef.current += "\nAgent: " + text;
       }
     },
     onError: (err) => {
