@@ -16,7 +16,7 @@ const DashboardSidebar = () => {
   return (
     <aside className="w-56 h-screen sticky top-0 flex flex-col py-6 px-4" style={{ background: "hsl(var(--sidebar-bg))" }}>
       <div className="mb-8 px-3">
-        <h2 className="text-lg font-bold text-foreground tracking-tight">Casino<span className="text-primary">AI</span></h2>
+        <h2 className="text-lg font-bold text-foreground tracking-tight">Pulse</h2>
         <p className="text-[11px] text-muted-foreground mt-0.5">Analytics Dashboard</p>
       </div>
 
