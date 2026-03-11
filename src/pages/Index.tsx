@@ -156,8 +156,8 @@ const Index = () => {
               className="bg-card text-foreground text-xs rounded-lg px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="all">All types</option>
-              <option value="apprécié">Appreciated</option>
-              <option value="irritant">Irritants</option>
+              <option value="apprécié">Positive</option>
+              <option value="irritant">Negative</option>
             </select>
             <select
               value={filterGroup}
