@@ -223,7 +223,7 @@ const Index = () => {
           {isTypeFiltered && (
             <div className="bg-card rounded-xl border border-border p-5 mb-5">
               <h3 className="text-sm font-semibold text-foreground mb-4">
-                {isAppreciated ? "Top Appreciated Themes" : "Top Irritant Themes"}
+                {isAppreciated ? "Top Positive Themes" : "Top Negative Themes"}
               </h3>
               <div className="space-y-3">
                 {stats.topFiltered.map((item, i) => (
