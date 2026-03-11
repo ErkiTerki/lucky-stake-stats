@@ -51,8 +51,8 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
                 </span>
               )}
             />
-            <Bar dataKey="positive" stackId="a" fill="hsl(152, 30%, 65%)" barSize={14} radius={[0, 0, 0, 0]} />
-            <Bar dataKey="negative" stackId="a" fill="hsl(0, 35%, 70%)" barSize={14} radius={[0, 4, 4, 0]} />
+            <Bar dataKey="positive" stackId="a" fill="hsl(145, 55%, 75%)" barSize={14} radius={[0, 0, 0, 0]} />
+            <Bar dataKey="negative" stackId="a" fill="hsl(0, 65%, 78%)" barSize={14} radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
