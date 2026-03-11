@@ -198,7 +198,11 @@ const LastReviewPage = () => {
                 <CardTitle className="text-base">Customer Feedback</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-foreground leading-relaxed">{entry.long_description}</p>
+                {isTranslating ? (
+                  <p className="text-sm text-muted-foreground italic">Translating...</p>
+                ) : (
+                  <p className="text-sm text-foreground leading-relaxed">{translatedDescription || entry.long_description}</p>
+                )}
               </CardContent>
             </Card>
 
