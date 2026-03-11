@@ -97,7 +97,7 @@ export const groupTranslationsExtended: Record<string, string> = {
 };
 
 export function translateGroup(group: string): string {
-  return groupTranslations[group] || group;
+  return groupTranslationsExtended[group] || groupTranslations[group] || group;
 }
 
 export function translateTag(tag: string): string {
