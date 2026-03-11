@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { MessageSquare, ThumbsUp, ThumbsDown, BarChart3 } from "lucide-react";
+import { MessageSquare, ThumbsUp, ThumbsDown, BarChart3, Search } from "lucide-react";
 import feedbackData from "@/data/feedback.json";
 import KPICard from "@/components/KPICard";
 import SentimentBar from "@/components/SentimentBar";
 import TypeBreakdownChart from "@/components/TypeBreakdownChart";
 import GroupDonutChart from "@/components/GroupDonutChart";
 import TagExplorer from "@/components/TagExplorer";
+import DashboardSidebar from "@/components/DashboardSidebar";
 import { translateGroup, translateTag } from "@/lib/translations";
 
 interface FeedbackItem {
@@ -69,84 +70,95 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="px-8 pt-10 pb-6">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-xl font-semibold text-foreground">Casino Analytics</h1>
-          <p className="text-sm text-muted-foreground mt-1">Customer feedback analysis</p>
-        </div>
-      </header>
+    <div className="flex min-h-screen bg-background">
+      <DashboardSidebar />
 
-      <main className="max-w-5xl mx-auto px-8 pb-16">
-        {/* Filters */}
-        <div className="flex items-center gap-3 mb-8">
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="bg-background text-foreground text-xs rounded-md px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            <option value="all">All types</option>
-            <option value="apprécié">Appreciated</option>
-            <option value="irritant">Irritants</option>
-          </select>
-          <select
-            value={filterGroup}
-            onChange={(e) => setFilterGroup(e.target.value)}
-            className="bg-background text-foreground text-xs rounded-md px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            <option value="all">All groups</option>
-            {stats.groups.map((g) => (
-              <option key={g} value={g}>{translateGroup(g)}</option>
-            ))}
-          </select>
-        </div>
+      <div className="flex-1 min-w-0">
+        {/* Top bar */}
+        <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border px-8 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3 bg-muted rounded-lg px-3 py-1.5 w-64">
+            <Search className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Search...</span>
+            <span className="ml-auto text-[10px] text-muted-foreground border border-border rounded px-1.5 py-0.5 bg-background">⌘K</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="bg-card text-foreground text-xs rounded-lg px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="all">All types</option>
+              <option value="apprécié">Appreciated</option>
+              <option value="irritant">Irritants</option>
+            </select>
+            <select
+              value={filterGroup}
+              onChange={(e) => setFilterGroup(e.target.value)}
+              className="bg-card text-foreground text-xs rounded-lg px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="all">All groups</option>
+              {stats.groups.map((g) => (
+                <option key={g} value={g}>{translateGroup(g)}</option>
+              ))}
+            </select>
+          </div>
+        </header>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border-b border-border mb-10">
-          <KPICard
-            title="Total mentions"
-            value={stats.totalMentions}
-            icon={MessageSquare}
-            subtitle={`${data.length} themes`}
-          />
-          <KPICard
-            title="Appreciated"
-            value={stats.posCount}
-            icon={ThumbsUp}
-            trend="positive"
-            subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
-          />
-          <KPICard
-            title="Irritants"
-            value={stats.negCount}
-            icon={ThumbsDown}
-            trend="negative"
-            subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
-          />
-          <KPICard
-            title="Positive ratio"
-            value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
-            icon={BarChart3}
-            subtitle="Satisfaction score"
-          />
-        </div>
+        <main className="px-8 py-6 max-w-6xl">
+          {/* Page title */}
+          <div className="mb-6">
+            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Customer feedback analysis overview</p>
+          </div>
 
-        {/* Sentiment */}
-        <div className="mb-12">
-          <SentimentBar positive={stats.posCount} negative={stats.negCount} />
-        </div>
+          {/* KPIs row */}
+          <div className="bg-card rounded-xl border border-border p-5 mb-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <KPICard
+                title="Total Mentions"
+                value={stats.totalMentions}
+                icon={MessageSquare}
+                subtitle={`${data.length} themes`}
+              />
+              <KPICard
+                title="Appreciated"
+                value={stats.posCount}
+                icon={ThumbsUp}
+                trend="positive"
+                subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
+              />
+              <KPICard
+                title="Irritants"
+                value={stats.negCount}
+                icon={ThumbsDown}
+                trend="negative"
+                subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
+              />
+              <KPICard
+                title="Positive Ratio"
+                value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
+                icon={BarChart3}
+                trend="positive"
+                subtitle="Satisfaction score"
+              />
+            </div>
+          </div>
 
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          <TypeBreakdownChart data={stats.byTag} />
-          <GroupDonutChart data={stats.byGroup} />
-        </div>
+          {/* Sentiment */}
+          <div className="mb-5">
+            <SentimentBar positive={stats.posCount} negative={stats.negCount} />
+          </div>
 
-        {/* Explorer */}
-        <div className="border-t border-border pt-8">
+          {/* Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <TypeBreakdownChart data={stats.byTag} />
+            <GroupDonutChart data={stats.byGroup} />
+          </div>
+
+          {/* Explorer */}
           <TagExplorer data={data} filterType={filterType} filterGroup={filterGroup} />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };
