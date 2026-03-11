@@ -55,10 +55,6 @@ const Index = () => {
 
   const allData = useMemo(() => [...staticData, ...dbEntries], [dbEntries]);
 
-const Index = () => {
-  const [filterType, setFilterType] = useState("all");
-  const [filterGroup, setFilterGroup] = useState("all");
-
   const isTypeFiltered = filterType !== "all";
   const isGroupFiltered = filterGroup !== "all";
   const isAppreciated = filterType === "apprécié";
