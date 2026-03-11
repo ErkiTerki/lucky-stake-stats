@@ -187,7 +187,7 @@ const LastReviewPage = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm font-medium text-foreground">{entry.tag}</p>
+                  <p className="text-sm font-medium text-foreground">{translateTag(entry.tag)}</p>
                 </CardContent>
               </Card>
             </div>
