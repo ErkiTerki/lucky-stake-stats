@@ -166,7 +166,13 @@ const FeedbackPage = () => {
           )}
 
           <button
-            onClick={() => { setSubmitted(false); transcriptRef.current = ""; setParsedEntries([]); }}
+            onClick={() => {
+              setSubmitted(false);
+              setConversationEnded(false);
+              setStatusMessage("Tap to start");
+              transcriptRef.current = "";
+              setParsedEntries([]);
+            }}
             className="bg-primary text-primary-foreground rounded-lg px-6 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
           >
             Give More Feedback
