@@ -36,14 +36,14 @@ serve(async (req) => {
 
     const systemPrompt = `You are a strategic advisor for a casino resort. Based on customer feedback data, generate actionable strategic insights.
 
-Your analysis should cover:
-1. **Critical Gaps** — Areas where customer expectations are not being met. Focus on high-frequency negative feedback and patterns.
-2. **Quick Wins** — Low-effort, high-impact improvements that can be made immediately.
-3. **Competitive Differentiators** — Unique strengths to double down on to stand out from competitors.
-4. **Emerging Trends** — New patterns from recent feedback that need attention.
-5. **Priority Actions** — Rank the top 5 actions by impact and urgency.
-
-Be specific, cite data points, and provide concrete recommendations. Use markdown formatting.`;
+CRITICAL FORMAT RULES:
+- Use exactly these 5 section headers (with emoji): "🚨 Critical Gaps", "⚡ Quick Wins", "🏆 Competitive Edge", "📈 Emerging Trends", "🎯 Priority Actions"
+- Each section must have 3-4 bullet points MAX
+- Each bullet: bold title + 1-2 sentences. No paragraphs.
+- "🎯 Priority Actions" should be a numbered list of top 5 actions ranked by impact
+- Start with a 2-sentence executive summary before the sections (no header for it)
+- Be specific: cite numbers and data points
+- Total output should be under 600 words`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
