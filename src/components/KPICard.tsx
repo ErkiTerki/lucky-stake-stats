@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 
 interface KPICardProps {
@@ -10,27 +9,20 @@ interface KPICardProps {
   delay?: number;
 }
 
-const KPICard = ({ title, value, subtitle, icon: Icon, trend, delay = 0 }: KPICardProps) => {
+const KPICard = ({ title, value, subtitle, icon: Icon, trend }: KPICardProps) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className="glass-card p-6 glow-card"
-    >
-      <div className="flex items-start justify-between mb-4">
-        <span className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+    <div className="py-5">
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
           {title}
         </span>
-        <div className="p-2 rounded-lg bg-primary/10">
-          <Icon className="w-4 h-4 text-primary" />
-        </div>
       </div>
-      <div className="text-3xl font-bold text-foreground font-mono">
+      <div className="text-2xl font-semibold text-foreground font-mono tracking-tight">
         {typeof value === "number" ? value.toLocaleString() : value}
       </div>
       {subtitle && (
-        <p className={`text-sm mt-2 ${
+        <p className={`text-xs mt-1.5 ${
           trend === "positive" ? "text-success" : 
           trend === "negative" ? "text-destructive" : 
           "text-muted-foreground"
@@ -38,7 +30,7 @@ const KPICard = ({ title, value, subtitle, icon: Icon, trend, delay = 0 }: KPICa
           {subtitle}
         </p>
       )}
-    </motion.div>
+    </div>
   );
 };
 

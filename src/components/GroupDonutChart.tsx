@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 interface GroupDonutProps {
@@ -6,18 +5,18 @@ interface GroupDonutProps {
 }
 
 const COLORS = [
-  "hsl(210, 60%, 72%)",
-  "hsl(180, 50%, 65%)",
-  "hsl(260, 50%, 72%)",
-  "hsl(160, 45%, 62%)",
-  "hsl(30, 55%, 70%)",
-  "hsl(340, 45%, 72%)",
+  "hsl(243, 75%, 59%)",
+  "hsl(243, 40%, 72%)",
+  "hsl(243, 25%, 82%)",
+  "hsl(243, 15%, 88%)",
+  "hsl(243, 10%, 70%)",
+  "hsl(243, 50%, 65%)",
 ];
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="glass-card p-3 border border-border text-sm">
+      <div className="bg-card border border-border rounded-lg px-3 py-2 text-xs">
         <p className="text-foreground font-medium">{payload[0].name}</p>
         <p className="text-muted-foreground">{payload[0].value.toLocaleString()} mentions</p>
       </div>
@@ -30,25 +29,20 @@ const GroupDonutChart = ({ data }: GroupDonutProps) => {
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
-      className="glass-card p-6"
-    >
-      <h3 className="text-lg font-semibold mb-1 text-foreground">By Group</h3>
-      <p className="text-muted-foreground text-sm mb-6">Distribution by activity domain</p>
-      <div className="flex items-center gap-6">
-        <div className="h-[220px] w-[220px] flex-shrink-0">
+    <div>
+      <h3 className="text-sm font-medium text-foreground mb-1">By Group</h3>
+      <p className="text-xs text-muted-foreground mb-5">Distribution by activity domain</p>
+      <div className="flex items-center gap-8">
+        <div className="h-[200px] w-[200px] flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={65}
-                outerRadius={100}
-                paddingAngle={3}
+                innerRadius={60}
+                outerRadius={90}
+                paddingAngle={2}
                 dataKey="value"
                 stroke="none"
               >
@@ -60,14 +54,14 @@ const GroupDonutChart = ({ data }: GroupDonutProps) => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="flex flex-col gap-2 min-w-0">
+        <div className="flex flex-col gap-2.5 min-w-0">
           {data.map((item, i) => (
-            <div key={item.name} className="flex items-center gap-2 text-sm">
+            <div key={item.name} className="flex items-center gap-2.5 text-xs">
               <div
-                className="w-3 h-3 rounded-full flex-shrink-0"
+                className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
                 style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
-              <span className="text-secondary-foreground truncate">{item.name}</span>
+              <span className="text-foreground truncate">{item.name}</span>
               <span className="text-muted-foreground font-mono ml-auto">
                 {((item.value / total) * 100).toFixed(0)}%
               </span>
@@ -75,7 +69,7 @@ const GroupDonutChart = ({ data }: GroupDonutProps) => {
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
