@@ -163,6 +163,15 @@ const LastReviewPage = () => {
             </div>
           </div>
         )}
+      {/* Demo link */}
+      <a
+        href="https://id-preview--9a6fa649-bc25-4311-a59e-e238e253c658.lovable.app/feedback"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-4 right-4 text-xs bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50"
+      >
+        Open Feedback Form ↗
+      </a>
       </main>
     </div>
   );
