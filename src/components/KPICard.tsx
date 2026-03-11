@@ -16,7 +16,7 @@ const KPICard = ({ title, value, subtitle, icon: Icon, trend, delay = 0 }: KPICa
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="glass-card p-6 glow-gold"
+      className="glass-card p-6 glow-card"
     >
       <div className="flex items-start justify-between mb-4">
         <span className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
@@ -26,7 +26,7 @@ const KPICard = ({ title, value, subtitle, icon: Icon, trend, delay = 0 }: KPICa
           <Icon className="w-4 h-4 text-primary" />
         </div>
       </div>
-      <div className="text-3xl font-bold text-gradient-gold font-mono">
+      <div className="text-3xl font-bold text-foreground font-mono">
         {typeof value === "number" ? value.toLocaleString() : value}
       </div>
       {subtitle && (

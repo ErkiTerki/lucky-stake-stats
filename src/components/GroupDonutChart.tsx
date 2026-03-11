@@ -6,12 +6,12 @@ interface GroupDonutProps {
 }
 
 const COLORS = [
-  "hsl(38, 92%, 55%)",
-  "hsl(200, 70%, 50%)",
-  "hsl(280, 60%, 55%)",
-  "hsl(152, 60%, 42%)",
-  "hsl(20, 80%, 55%)",
-  "hsl(340, 65%, 50%)",
+  "hsl(210, 60%, 72%)",
+  "hsl(180, 50%, 65%)",
+  "hsl(260, 50%, 72%)",
+  "hsl(160, 45%, 62%)",
+  "hsl(30, 55%, 70%)",
+  "hsl(340, 45%, 72%)",
 ];
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -36,7 +36,7 @@ const GroupDonutChart = ({ data }: GroupDonutProps) => {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="glass-card p-6"
     >
-      <h3 className="text-lg font-semibold mb-1">By Group</h3>
+      <h3 className="text-lg font-semibold mb-1 text-foreground">By Group</h3>
       <p className="text-muted-foreground text-sm mb-6">Distribution by activity domain</p>
       <div className="flex items-center gap-6">
         <div className="h-[220px] w-[220px] flex-shrink-0">
