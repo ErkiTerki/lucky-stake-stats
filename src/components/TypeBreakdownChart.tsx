@@ -18,8 +18,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-card border border-border rounded-xl px-3 py-2 text-xs shadow-sm">
         <p className="text-foreground font-medium mb-1">{label}</p>
-        <p style={{ color: "hsl(var(--chart-positive))" }}>{positive.toLocaleString()} appreciated</p>
-        <p style={{ color: "hsl(var(--chart-negative))" }}>{negative.toLocaleString()} irritant</p>
+        <p style={{ color: "hsl(var(--chart-positive))" }}>{positive.toLocaleString()} positive</p>
+        <p style={{ color: "hsl(var(--chart-negative))" }}>{negative.toLocaleString()} negative</p>
       </div>
     );
   }
