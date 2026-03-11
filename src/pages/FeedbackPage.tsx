@@ -57,8 +57,21 @@ const FeedbackPage = () => {
     setSubmitted(false);
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const tokenResp = await fetch(TOKEN_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({}),
+      });
+      const tokenData = await tokenResp.json();
+      if (!tokenData.token) throw new Error("No token received");
+
       await conversation.startSession({
-        agentId: AGENT_ID,
+        conversationToken: tokenData.token,
+        connectionType: "webrtc",
       });
     } catch (error) {
       console.error("Failed to start conversation:", error);
