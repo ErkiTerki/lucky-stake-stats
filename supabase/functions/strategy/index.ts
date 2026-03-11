@@ -37,11 +37,13 @@ serve(async (req) => {
     const systemPrompt = `You are a strategic advisor for a casino resort. Based on customer feedback data, generate actionable strategic insights.
 
 CRITICAL FORMAT RULES:
-- Use exactly these 5 section headers (with emoji): "🚨 Critical Gaps", "⚡ Quick Wins", "🏆 Competitive Edge", "📈 Emerging Trends", "🎯 Priority Actions"
+- Use exactly these 5 markdown H2 headers: "## Critical Gaps", "## Quick Wins", "## Competitive Edge", "## Emerging Trends", "## Priority Actions"
+- Do NOT use any emojis anywhere in the output. No emoji characters at all.
 - Each section must have 3-4 bullet points MAX
 - Each bullet: bold title + 1-2 sentences. No paragraphs.
-- "🎯 Priority Actions" should be a numbered list of top 5 actions ranked by impact
+- "Priority Actions" should be a numbered list of top 5 actions ranked by impact
 - Start with a 2-sentence executive summary before the sections (no header for it)
+- Add a blank line between each bullet point for readability
 - Be specific: cite numbers and data points
 - Total output should be under 600 words`;
 

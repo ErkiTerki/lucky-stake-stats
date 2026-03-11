@@ -191,7 +191,7 @@ const StrategyPage = () => {
                           {section.title}
                         </h3>
                       </div>
-                      <div className="prose prose-sm prose-neutral max-w-none [&_p]:text-sm [&_li]:text-sm [&_strong]:text-foreground [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5">
+                      <div className="prose prose-sm prose-neutral max-w-none [&_p]:text-sm [&_li]:text-sm [&_strong]:text-foreground [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-1.5">
                         <ReactMarkdown>{section.content}</ReactMarkdown>
                       </div>
                     </div>
