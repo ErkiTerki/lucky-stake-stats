@@ -24,26 +24,39 @@ const FeedbackPage = () => {
   const transcriptRef = useRef("");
 
   const conversation = useConversation({
-    onConnect: () => console.log("Connected to voice agent"),
+    onConnect: () => {
+      console.log("Connected to voice agent");
+      setConversationEnded(false);
+      setStatusMessage("Listening — tap to end");
+    },
     onDisconnect: () => {
       console.log("Disconnected from voice agent");
+      setConversationEnded(true);
+      setStatusMessage("Conversation ended — saving your feedback...");
       if (transcriptRef.current.trim()) {
         submitFeedback(transcriptRef.current);
+      } else {
+        setError("We couldn't capture the conversation transcript. Please try again.");
+        setStatusMessage("Conversation ended");
       }
     },
     onMessage: (message: any) => {
       console.log("ElevenLabs message:", JSON.stringify(message));
+
       if (message.type === "user_transcript") {
-        const text = message.user_transcription_event?.user_transcript || "";
-        if (text.trim()) transcriptRef.current += "\nClient: " + text;
-      } else if (message.type === "agent_response") {
-        const text = message.agent_response_event?.agent_response || "";
-        if (text.trim()) transcriptRef.current += "\nAgent: " + text;
+        const text = message.user_transcription_event?.user_transcript || message.text || "";
+        if (text.trim()) transcriptRef.current += `\nClient: ${text}`;
+      }
+
+      if (message.type === "agent_response") {
+        const text = message.agent_response_event?.agent_response || message.text || "";
+        if (text.trim()) transcriptRef.current += `\nAgent: ${text}`;
       }
     },
     onError: (err) => {
       console.error("Voice agent error:", err);
       setError("Connection error. Please try again.");
+      setStatusMessage("Connection error");
     },
   });
 
