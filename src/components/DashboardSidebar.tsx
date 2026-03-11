@@ -6,6 +6,7 @@ const navItems = [
   { label: "Strategy", icon: Lightbulb, path: "/strategy" },
   { label: "Competitors", icon: Swords, path: "/competitors" },
   { label: "Chat", icon: MessageCircle, path: "/chat" },
+  { label: "Last Review", icon: ClipboardList, path: "/last-review" },
 ];
 
 const DashboardSidebar = () => {
