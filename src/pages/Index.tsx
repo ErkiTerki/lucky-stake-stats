@@ -125,7 +125,7 @@ const Index = () => {
     pageTitle = `Positive — ${translateGroup(filterGroup)}`;
     pageSubtitle = "Positive feedback for this group";
   } else if (isIrritant && isGroupFiltered) {
-    pageTitle = `Pain Points — ${translateGroup(filterGroup)}`;
+    pageTitle = `Negative — ${translateGroup(filterGroup)}`;
     pageSubtitle = "Areas of frustration in this group";
   } else if (isAppreciated) {
     pageTitle = "What Customers Love";
