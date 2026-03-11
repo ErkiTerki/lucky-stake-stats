@@ -8,6 +8,7 @@ import ChatPage from "./pages/ChatPage.tsx";
 import CompetitorsPage from "./pages/CompetitorsPage.tsx";
 import StrategyPage from "./pages/StrategyPage.tsx";
 import FeedbackPage from "./pages/FeedbackPage.tsx";
+import LastReviewPage from "./pages/LastReviewPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
