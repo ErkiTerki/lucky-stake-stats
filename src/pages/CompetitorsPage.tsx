@@ -152,7 +152,7 @@ const CompetitorsPage = () => {
             <p className="text-sm text-foreground leading-relaxed mb-4">
               Across <span className="font-semibold font-mono">{analysis.totalMentions.toLocaleString()}</span> customer
               mentions that reference competitors, <span className="font-semibold text-destructive">{negPct}%</span> are
-              unfavorable comparisons where customers feel competitors do better, while{" "}
+              negative comparisons where customers feel competitors do better, while{" "}
               <span className="font-semibold text-primary">{posPct}%</span> are areas where customers think you outperform.
             </p>
 
