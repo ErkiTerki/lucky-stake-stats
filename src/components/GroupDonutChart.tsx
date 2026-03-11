@@ -36,8 +36,8 @@ const GroupDonutChart = ({ data }: GroupDonutProps) => {
       transition={{ duration: 0.5, delay: 0.3 }}
       className="glass-card p-6"
     >
-      <h3 className="text-lg font-semibold mb-1">Par groupe</h3>
-      <p className="text-muted-foreground text-sm mb-6">Distribution par domaine d'activité</p>
+      <h3 className="text-lg font-semibold mb-1">By Group</h3>
+      <p className="text-muted-foreground text-sm mb-6">Distribution by activity domain</p>
       <div className="flex items-center gap-6">
         <div className="h-[220px] w-[220px] flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">

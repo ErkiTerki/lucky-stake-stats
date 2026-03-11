@@ -35,9 +35,9 @@ const TagExplorer = ({ data, filterType, filterGroup }: TagExplorerProps) => {
       transition={{ duration: 0.5, delay: 0.4 }}
       className="glass-card p-6"
     >
-      <h3 className="text-lg font-semibold mb-1">Explorateur de thèmes</h3>
+      <h3 className="text-lg font-semibold mb-1">Theme Explorer</h3>
       <p className="text-muted-foreground text-sm mb-6">
-        {sorted.length} thèmes trouvés — cliquez pour voir le détail
+        {sorted.length} themes found — click to see details
       </p>
       <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
         {sorted.map((item) => {

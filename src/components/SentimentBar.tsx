@@ -17,8 +17,8 @@ const SentimentBar = ({ positive, negative }: SentimentBarProps) => {
       transition={{ duration: 0.5, delay: 0.15 }}
       className="glass-card p-6"
     >
-      <h3 className="text-lg font-semibold mb-1">Sentiment global</h3>
-      <p className="text-muted-foreground text-sm mb-4">Ratio apprécié vs irritant</p>
+      <h3 className="text-lg font-semibold mb-1">Overall Sentiment</h3>
+      <p className="text-muted-foreground text-sm mb-4">Appreciated vs irritant ratio</p>
       <div className="flex rounded-full overflow-hidden h-4 bg-secondary">
         <motion.div
           initial={{ width: 0 }}
@@ -35,7 +35,7 @@ const SentimentBar = ({ positive, negative }: SentimentBarProps) => {
       </div>
       <div className="flex justify-between mt-3 text-sm">
         <span className="text-success font-medium">
-          👍 {posPercent.toFixed(1)}% apprécié ({positive.toLocaleString()})
+          👍 {posPercent.toFixed(1)}% appreciated ({positive.toLocaleString()})
         </span>
         <span className="text-destructive font-medium">
           👎 {negPercent.toFixed(1)}% irritant ({negative.toLocaleString()})

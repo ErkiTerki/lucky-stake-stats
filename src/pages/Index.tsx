@@ -32,7 +32,6 @@ const Index = () => {
     const topPositive = [...positive].sort((a, b) => b.count - a.count)[0];
     const topNegative = [...negative].sort((a, b) => b.count - a.count)[0];
 
-    // Aggregate by tag (combine same tags)
     const tagMap = new Map<string, { name: string; count: number; type: string }>();
     data.forEach((d) => {
       const key = d.tag;
@@ -45,7 +44,6 @@ const Index = () => {
     });
     const byTag = [...tagMap.values()].sort((a, b) => b.count - a.count).slice(0, 10);
 
-    // Group aggregation
     const groupMap = new Map<string, number>();
     data.forEach((d) => {
       groupMap.set(d.group, (groupMap.get(d.group) || 0) + d.count);
@@ -61,13 +59,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border px-6 py-5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gradient-gold">Casino Analytics</h1>
             <p className="text-muted-foreground text-sm mt-0.5">
-              Analyse des retours clients — données agrégées
+              Customer feedback analysis — aggregated data
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -76,8 +73,8 @@ const Index = () => {
               onChange={(e) => setFilterType(e.target.value)}
               className="bg-secondary text-secondary-foreground text-sm rounded-lg px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="all">Tous les types</option>
-              <option value="apprécié">Appréciés</option>
+              <option value="all">All types</option>
+              <option value="apprécié">Appreciated</option>
               <option value="irritant">Irritants</option>
             </select>
             <select
@@ -85,7 +82,7 @@ const Index = () => {
               onChange={(e) => setFilterGroup(e.target.value)}
               className="bg-secondary text-secondary-foreground text-sm rounded-lg px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="all">Tous les groupes</option>
+              <option value="all">All groups</option>
               {stats.groups.map((g) => (
                 <option key={g} value={g}>{g}</option>
               ))}
@@ -95,17 +92,16 @@ const Index = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-        {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPICard
             title="Total mentions"
             value={stats.totalMentions}
             icon={MessageSquare}
-            subtitle={`${data.length} thèmes identifiés`}
+            subtitle={`${data.length} themes identified`}
             delay={0}
           />
           <KPICard
-            title="Appréciés"
+            title="Appreciated"
             value={stats.posCount}
             icon={ThumbsUp}
             trend="positive"
@@ -121,24 +117,21 @@ const Index = () => {
             delay={0.1}
           />
           <KPICard
-            title="Ratio positif"
+            title="Positive ratio"
             value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
             icon={BarChart3}
-            subtitle="Score de satisfaction"
+            subtitle="Satisfaction score"
             delay={0.15}
           />
         </div>
 
-        {/* Sentiment bar */}
         <SentimentBar positive={stats.posCount} negative={stats.negCount} />
 
-        {/* Charts row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <TypeBreakdownChart data={stats.byTag} />
           <GroupDonutChart data={stats.byGroup} />
         </div>
 
-        {/* Tag explorer */}
         <TagExplorer data={data} filterType={filterType} filterGroup={filterGroup} />
       </main>
     </div>
