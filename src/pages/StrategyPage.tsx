@@ -16,16 +16,14 @@ const sectionMeta: Record<string, { icon: typeof AlertTriangle; color: string; b
 };
 
 function parseSections(raw: string) {
-  // Split by h2/h3 headers with emoji
-  const headerRegex = /^#{1,3}\s*(🚨|⚡|🏆|📈|🎯)\s*(.+)$/gm;
-  const parts: { title: string; key: string; emoji: string; content: string }[] = [];
-  let lastIndex = 0;
+  const headerRegex = /^#{1,3}\s*(.+)$/gm;
+  const parts: { title: string; key: string; content: string }[] = [];
   let intro = "";
   let match;
-  const matches: { index: number; full: string; emoji: string; title: string }[] = [];
+  const matches: { index: number; full: string; title: string }[] = [];
 
   while ((match = headerRegex.exec(raw)) !== null) {
-    matches.push({ index: match.index, full: match[0], emoji: match[1], title: match[2].trim() });
+    matches.push({ index: match.index, full: match[0], title: match[1].replace(/[🚨⚡🏆📈🎯]/g, "").trim() });
   }
 
   if (matches.length === 0) return { intro: raw, sections: [] };
@@ -37,7 +35,7 @@ function parseSections(raw: string) {
     const end = i + 1 < matches.length ? matches[i + 1].index : raw.length;
     const content = raw.slice(start, end).trim();
     const key = matches[i].title.toLowerCase().replace(/[^a-z ]/g, "").trim();
-    parts.push({ title: matches[i].title, key, emoji: matches[i].emoji, content });
+    parts.push({ title: matches[i].title, key, content });
   }
 
   return { intro, sections: parts };
@@ -190,10 +188,10 @@ const StrategyPage = () => {
                           <Icon className={`w-3.5 h-3.5 ${iconColor}`} />
                         </div>
                         <h3 className="text-sm font-semibold text-foreground">
-                          {section.emoji} {section.title}
+                          {section.title}
                         </h3>
                       </div>
-                      <div className="prose prose-sm prose-neutral max-w-none [&_p]:text-sm [&_li]:text-sm [&_strong]:text-foreground [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5">
+                      <div className="prose prose-sm prose-neutral max-w-none [&_p]:text-sm [&_li]:text-sm [&_strong]:text-foreground [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-1.5">
                         <ReactMarkdown>{section.content}</ReactMarkdown>
                       </div>
                     </div>
