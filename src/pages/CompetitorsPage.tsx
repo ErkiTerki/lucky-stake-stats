@@ -240,7 +240,7 @@ const CompetitorsPage = () => {
                 Where Competitors Win
               </h2>
               {analysis.weaknesses.length === 0 ? (
-                <p className="text-xs text-muted-foreground italic">No unfavorable competitor comparisons found.</p>
+                <p className="text-xs text-muted-foreground italic">No negative competitor comparisons found.</p>
               ) : (
                 <div className="space-y-4">
                   {analysis.weaknesses.slice(0, 8).map((w) => (
