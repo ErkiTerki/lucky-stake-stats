@@ -6,55 +6,55 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
+    --background: 80 20% 97%;
+    --foreground: 160 10% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 160 10% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
+    --popover-foreground: 160 10% 12%;
 
-    --primary: 243 75% 59%;
+    --primary: 145 45% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 40%;
+    --secondary: 120 15% 94%;
+    --secondary-foreground: 160 10% 35%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 100 10% 93%;
+    --muted-foreground: 160 6% 50%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 145 35% 92%;
+    --accent-foreground: 145 45% 30%;
 
-    --destructive: 0 60% 50%;
+    --destructive: 0 55% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 152 55% 40%;
+    --success: 145 45% 42%;
     --success-foreground: 0 0% 100%;
 
-    --border: 0 0% 92%;
-    --input: 0 0% 92%;
-    --ring: 243 75% 59%;
+    --warning: 38 90% 55%;
+    --warning-foreground: 38 90% 20%;
 
-    --radius: 0.5rem;
+    --border: 120 8% 90%;
+    --input: 120 8% 90%;
+    --ring: 145 45% 42%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 9%;
-    --sidebar-primary: 243 75% 59%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 0 0% 40%;
-    --sidebar-border: 0 0% 92%;
-    --sidebar-ring: 243 75% 59%;
+    --radius: 0.75rem;
 
-    --chart-positive: 152 55% 40%;
-    --chart-negative: 0 60% 50%;
-    --chart-1: 243 75% 59%;
-    --chart-2: 243 40% 72%;
-    --chart-3: 243 20% 82%;
-    --chart-4: 152 55% 40%;
-    --chart-5: 0 60% 50%;
+    --sidebar-bg: 130 20% 96%;
+    --sidebar-fg: 160 10% 12%;
+    --sidebar-active: 145 45% 42%;
+    --sidebar-active-fg: 0 0% 100%;
+    --sidebar-hover: 130 15% 92%;
+
+    --chart-positive: 145 45% 42%;
+    --chart-negative: 0 55% 60%;
+    --chart-1: 145 45% 42%;
+    --chart-2: 38 90% 55%;
+    --chart-3: 200 50% 55%;
+    --chart-4: 280 40% 60%;
+    --chart-5: 20 70% 55%;
   }
 }
 
@@ -66,8 +66,6 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
   code, .font-mono {
