@@ -48,7 +48,7 @@ serve(async (req) => {
 
     const systemPrompt = `You are a feedback classifier for a casino resort. Given a customer conversation transcript, extract structured feedback entries.
 
-The available groups are:
+The available groups are (keep these exact French strings as the group value):
 - "Se divertir et socialiser" (Entertainment & Socializing)
 - "Se restaurer" (Dining)
 - "Être reconnu et récompensé" (Loyalty & Rewards)
@@ -56,15 +56,15 @@ The available groups are:
 - "Séjourner et se détendre" (Stay & Relaxation)
 - "Accéder facilement au site" (Access & Logistics)
 
-The available types are:
+The available types are (keep these exact French strings as the type value):
 - "Élément apprécié / Coup de coeur" (for positive feedback)
 - "Irritant / Point de douleur" (for negative feedback)
 
 Extract one or more feedback entries from the transcript. Each entry should have:
-- type: one of the two types above
-- group: one of the groups above
-- tag: a short theme label in French (e.g. "Qualité de la nourriture", "Ambiance générale", "Personnel accueillant")
-- long_description: a French summary of what the customer said about this topic`;
+- type: one of the two types above (keep the exact French string)
+- group: one of the groups above (keep the exact French string)
+- tag: a short theme label in ENGLISH (e.g. "Food quality", "Overall atmosphere", "Welcoming staff")
+- long_description: an ENGLISH summary of what the customer said about this topic`;
 
     const aiResp = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",

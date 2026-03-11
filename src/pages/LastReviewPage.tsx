@@ -22,8 +22,6 @@ const LastReviewPage = () => {
   const [entry, setEntry] = useState<FeedbackEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [translatedDescription, setTranslatedDescription] = useState<string>("");
-  const [isTranslating, setIsTranslating] = useState(false);
 
   useEffect(() => {
     const fetchLatestEntry = async (showRefreshingState = false) => {
@@ -65,60 +63,6 @@ const LastReviewPage = () => {
       supabase.removeChannel(channel);
     };
   }, []);
-
-  // Translate the description when entry changes
-  useEffect(() => {
-    if (!entry?.long_description) {
-      setTranslatedDescription("");
-      return;
-    }
-
-    const translateDescription = async () => {
-      setIsTranslating(true);
-      try {
-        const { data, error } = await supabase.functions.invoke("chat", {
-          body: {
-            messages: [
-              {
-                role: "user",
-                content: `Translate the following French customer feedback to English. Return ONLY the translation, no preamble:\n\n${entry.long_description}`,
-              },
-            ],
-          },
-        });
-
-        if (error) throw error;
-
-        // Handle streaming response as text
-        if (typeof data === "string") {
-          // Parse SSE data
-          const lines = data.split("\n");
-          let result = "";
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const jsonStr = line.slice(6).trim();
-            if (jsonStr === "[DONE]") break;
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content;
-              if (content) result += content;
-            } catch {}
-          }
-          setTranslatedDescription(result || entry.long_description);
-        } else if (data?.choices?.[0]?.message?.content) {
-          setTranslatedDescription(data.choices[0].message.content);
-        } else {
-          setTranslatedDescription(entry.long_description);
-        }
-      } catch (e) {
-        console.error("Translation error:", e);
-        setTranslatedDescription(entry.long_description);
-      }
-      setIsTranslating(false);
-    };
-
-    translateDescription();
-  }, [entry?.id]);
 
   const isPositive = entry?.type?.includes("apprécié");
 
@@ -198,11 +142,7 @@ const LastReviewPage = () => {
                 <CardTitle className="text-base">Customer Feedback</CardTitle>
               </CardHeader>
               <CardContent>
-                {isTranslating ? (
-                  <p className="text-sm text-muted-foreground italic">Translating...</p>
-                ) : (
-                  <p className="text-sm text-foreground leading-relaxed">{translatedDescription || entry.long_description}</p>
-                )}
+                <p className="text-sm text-foreground leading-relaxed">{entry.long_description}</p>
               </CardContent>
             </Card>
 
