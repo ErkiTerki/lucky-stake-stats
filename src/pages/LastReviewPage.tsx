@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ClipboardList, Clock, Tag, Layers, ThumbsUp, ThumbsDown } from "lucide-react";
+import { ClipboardList, Clock, Tag, Layers, ThumbsUp, ThumbsDown, RefreshCw } from "lucide-react";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,27 +21,47 @@ interface FeedbackEntry {
 const LastReviewPage = () => {
   const [entry, setEntry] = useState<FeedbackEntry | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchLatestEntry = async (showRefreshingState = false) => {
+      if (showRefreshingState) setIsRefreshing(true);
+
       const { data } = await supabase
         .from("feedback_entries")
         .select("*")
-        .order("created_at", { ascending: false })
+        .order("created_at", { ascending: false, nullsFirst: false })
         .limit(1);
-      if (data && data.length > 0) setEntry(data[0] as FeedbackEntry);
+
+      if (data && data.length > 0) {
+        setEntry(data[0] as FeedbackEntry);
+      }
+
       setLoading(false);
+      if (showRefreshingState) setIsRefreshing(false);
     };
-    fetch();
+
+    fetchLatestEntry();
 
     const channel = supabase
       .channel("last_review_realtime")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "feedback_entries" }, (payload) => {
         setEntry(payload.new as FeedbackEntry);
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          console.log("Last Review realtime subscribed");
+        }
+      });
 
-    return () => { supabase.removeChannel(channel); };
+    const interval = window.setInterval(() => {
+      fetchLatestEntry(true);
+    }, 5000);
+
+    return () => {
+      window.clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const isPositive = entry?.type?.includes("apprécié");
@@ -50,8 +70,16 @@ const LastReviewPage = () => {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar />
       <main className="flex-1 p-8 overflow-y-auto">
-        <h1 className="text-2xl font-bold text-foreground mb-1">Last Customer Review</h1>
-        <p className="text-sm text-muted-foreground mb-8">Most recent voice feedback received via ElevenLabs</p>
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground mb-1">Last Customer Review</h1>
+            <p className="text-sm text-muted-foreground">Most recent voice feedback received via ElevenLabs</p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+            Live updates enabled
+          </div>
+        </div>
 
         {loading ? (
           <div className="flex items-center justify-center h-64 text-muted-foreground">Loading…</div>
@@ -69,7 +97,7 @@ const LastReviewPage = () => {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center gap-2">
-                  {isPositive ? <ThumbsUp className="w-4 h-4 text-emerald-500" /> : <ThumbsDown className="w-4 h-4 text-rose-500" />}
+                  {isPositive ? <ThumbsUp className="w-4 h-4 text-primary" /> : <ThumbsDown className="w-4 h-4 text-destructive" />}
                   Sentiment
                 </CardTitle>
               </CardHeader>

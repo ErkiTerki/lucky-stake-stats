@@ -1,9 +1,7 @@
 import { useConversation } from "@elevenlabs/react";
 import { useState, useCallback, useRef } from "react";
 import { Mic, Phone, CheckCircle2, Loader2 } from "lucide-react";
-
-const PARSE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parse-feedback`;
-const TOKEN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-token`;
+import { supabase } from "@/integrations/supabase/client";
 
 interface ParsedEntry {
   type: string;
@@ -16,31 +14,46 @@ const FeedbackPage = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [conversationEnded, setConversationEnded] = useState(false);
   const [parsedEntries, setParsedEntries] = useState<ParsedEntry[]>([]);
   const [error, setError] = useState("");
+  const [statusMessage, setStatusMessage] = useState("Tap to start");
   const transcriptRef = useRef("");
 
   const conversation = useConversation({
-    onConnect: () => console.log("Connected to voice agent"),
+    onConnect: () => {
+      console.log("Connected to voice agent");
+      setConversationEnded(false);
+      setStatusMessage("Listening — tap to end");
+    },
     onDisconnect: () => {
       console.log("Disconnected from voice agent");
+      setConversationEnded(true);
+      setStatusMessage("Conversation ended — saving your feedback...");
       if (transcriptRef.current.trim()) {
         submitFeedback(transcriptRef.current);
+      } else {
+        setError("We couldn't capture the conversation transcript. Please try again.");
+        setStatusMessage("Conversation ended");
       }
     },
     onMessage: (message: any) => {
       console.log("ElevenLabs message:", JSON.stringify(message));
+
       if (message.type === "user_transcript") {
-        const text = message.user_transcription_event?.user_transcript || "";
-        if (text.trim()) transcriptRef.current += "\nClient: " + text;
-      } else if (message.type === "agent_response") {
-        const text = message.agent_response_event?.agent_response || "";
-        if (text.trim()) transcriptRef.current += "\nAgent: " + text;
+        const text = message.user_transcription_event?.user_transcript || message.text || "";
+        if (text.trim()) transcriptRef.current += `\nClient: ${text}`;
+      }
+
+      if (message.type === "agent_response") {
+        const text = message.agent_response_event?.agent_response || message.text || "";
+        if (text.trim()) transcriptRef.current += `\nAgent: ${text}`;
       }
     },
     onError: (err) => {
       console.error("Voice agent error:", err);
       setError("Connection error. Please try again.");
+      setStatusMessage("Connection error");
     },
   });
 
@@ -48,21 +61,18 @@ const FeedbackPage = () => {
     if (!text.trim() || submitting) return;
     setSubmitting(true);
     setError("");
+    setStatusMessage("Saving your feedback...");
+
     try {
-      const resp = await fetch(PARSE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ transcript: text }),
+      const { data, error } = await supabase.functions.invoke("parse-feedback", {
+        body: { transcript: text },
       });
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to process feedback");
+
+      if (error) {
+        throw new Error(error.message || "Failed to process feedback");
       }
-      const data = await resp.json();
-      if (data.entries && data.entries.length > 0) {
+
+      if (data?.entries && data.entries.length > 0) {
         setParsedEntries(data.entries.map((e: any) => ({
           type: e.type,
           group: e.group,
@@ -70,11 +80,15 @@ const FeedbackPage = () => {
           long_description: e.long_description,
         })));
       }
+
       setSubmitted(true);
+      setStatusMessage("Feedback saved successfully");
     } catch (e: any) {
       console.error("Submit error:", e);
       setError(e.message || "Something went wrong. Please try again.");
+      setStatusMessage("Saving failed");
     }
+
     setSubmitting(false);
   };
 
@@ -82,35 +96,33 @@ const FeedbackPage = () => {
     setIsConnecting(true);
     transcriptRef.current = "";
     setSubmitted(false);
+    setConversationEnded(false);
     setParsedEntries([]);
     setError("");
+    setStatusMessage("Requesting microphone access...");
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
+      setStatusMessage("Connecting to voice assistant...");
 
-      const tokenResp = await fetch(TOKEN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({}),
-      });
-      const tokenData = await tokenResp.json();
-      if (!tokenData.token) throw new Error("No token received");
+      const { data, error } = await supabase.functions.invoke("elevenlabs-token");
+      if (error) throw new Error(error.message || "Failed to get conversation token");
+      if (!data?.token) throw new Error("No token received");
 
       await conversation.startSession({
-        conversationToken: tokenData.token,
+        conversationToken: data.token,
         connectionType: "webrtc",
       });
     } catch (err: any) {
       console.error("Failed to start conversation:", err);
       setError(err.message || "Failed to connect. Please try again.");
+      setStatusMessage("Failed to connect");
     } finally {
       setIsConnecting(false);
     }
   }, [conversation]);
 
   const stopConversation = useCallback(async () => {
+    setStatusMessage("Ending conversation...");
     await conversation.endSession();
   }, [conversation]);
 
@@ -151,7 +163,13 @@ const FeedbackPage = () => {
           )}
 
           <button
-            onClick={() => { setSubmitted(false); transcriptRef.current = ""; setParsedEntries([]); }}
+            onClick={() => {
+              setSubmitted(false);
+              setConversationEnded(false);
+              setStatusMessage("Tap to start");
+              transcriptRef.current = "";
+              setParsedEntries([]);
+            }}
             className="bg-primary text-primary-foreground rounded-lg px-6 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
           >
             Give More Feedback
@@ -193,19 +211,19 @@ const FeedbackPage = () => {
           </button>
 
           <p className="text-sm text-muted-foreground">
-            {isConnecting
-              ? "Connecting..."
-              : isConnected
-                ? isSpeaking
-                  ? "Agent is speaking..."
-                  : "Listening — tap to end"
-                : "Tap to start"}
+            {statusMessage}
           </p>
+
+          {conversationEnded && !submitting && !submitted && !error && (
+            <p className="text-xs text-muted-foreground">
+              We ended the call and are waiting for your feedback to be saved.
+            </p>
+          )}
 
           {submitting && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
-              Processing your feedback...
+              Registering your feedback and updating the dashboard...
             </div>
           )}
 
