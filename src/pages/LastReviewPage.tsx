@@ -24,25 +24,44 @@ const LastReviewPage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchLatestEntry = async (showRefreshingState = false) => {
+      if (showRefreshingState) setIsRefreshing(true);
+
       const { data } = await supabase
         .from("feedback_entries")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(1);
-      if (data && data.length > 0) setEntry(data[0] as FeedbackEntry);
+
+      if (data && data.length > 0) {
+        setEntry(data[0] as FeedbackEntry);
+      }
+
       setLoading(false);
+      if (showRefreshingState) setIsRefreshing(false);
     };
-    fetch();
+
+    fetchLatestEntry();
 
     const channel = supabase
       .channel("last_review_realtime")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "feedback_entries" }, (payload) => {
         setEntry(payload.new as FeedbackEntry);
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          console.log("Last Review realtime subscribed");
+        }
+      });
 
-    return () => { supabase.removeChannel(channel); };
+    const interval = window.setInterval(() => {
+      fetchLatestEntry(true);
+    }, 5000);
+
+    return () => {
+      window.clearInterval(interval);
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const isPositive = entry?.type?.includes("apprécié");
