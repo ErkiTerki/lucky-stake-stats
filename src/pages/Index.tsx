@@ -24,32 +24,56 @@ const Index = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterGroup, setFilterGroup] = useState("all");
 
-  const isFiltered = filterType !== "all";
+  const isTypeFiltered = filterType !== "all";
+  const isGroupFiltered = filterGroup !== "all";
   const isAppreciated = filterType === "apprécié";
   const isIrritant = filterType === "irritant";
 
   const stats = useMemo(() => {
-    const totalMentions = allData.reduce((s, d) => s + d.count, 0);
-    const positive = allData.filter((d) => d.type.includes("apprécié"));
-    const negative = allData.filter((d) => d.type.includes("Irritant"));
-    const posCount = positive.reduce((s, d) => s + d.count, 0);
-    const negCount = negative.reduce((s, d) => s + d.count, 0);
-    const topPositive = [...positive].sort((a, b) => b.count - a.count)[0];
-    const topNegative = [...negative].sort((a, b) => b.count - a.count)[0];
+    // Global totals (unfiltered)
+    const globalTotal = allData.reduce((s, d) => s + d.count, 0);
+    const globalPos = allData.filter((d) => d.type.includes("apprécié")).reduce((s, d) => s + d.count, 0);
+    const globalNeg = allData.filter((d) => d.type.includes("Irritant")).reduce((s, d) => s + d.count, 0);
 
-    // Filtered data based on type
-    const filteredData = allData.filter((d) => {
+    // Apply both filters
+    const filtered = allData.filter((d) => {
       if (filterType === "apprécié" && !d.type.includes("apprécié")) return false;
       if (filterType === "irritant" && !d.type.includes("Irritant")) return false;
+      if (filterGroup !== "all" && d.group !== filterGroup) return false;
       return true;
     });
 
-    const filteredTotal = filteredData.reduce((s, d) => s + d.count, 0);
-    const filteredThemes = filteredData.length;
+    const filteredTotal = filtered.reduce((s, d) => s + d.count, 0);
+    const filteredThemes = filtered.length;
+    const filteredPos = filtered.filter((d) => d.type.includes("apprécié")).reduce((s, d) => s + d.count, 0);
+    const filteredNeg = filtered.filter((d) => d.type.includes("Irritant")).reduce((s, d) => s + d.count, 0);
+
+    // Determine the denominator for share calculation
+    let shareDenominator = globalTotal;
+    let shareLabel = "of all mentions";
+    if (isAppreciated && !isGroupFiltered) {
+      shareDenominator = globalTotal;
+      shareLabel = "of all mentions";
+    } else if (isIrritant && !isGroupFiltered) {
+      shareDenominator = globalTotal;
+      shareLabel = "of all mentions";
+    } else if (isAppreciated && isGroupFiltered) {
+      shareDenominator = globalPos;
+      shareLabel = "of all Appreciated";
+    } else if (isIrritant && isGroupFiltered) {
+      shareDenominator = globalNeg;
+      shareLabel = "of all Irritants";
+    } else if (isGroupFiltered) {
+      shareDenominator = globalTotal;
+      shareLabel = "of all mentions";
+    }
+
+    const topPositive = [...allData.filter((d) => d.type.includes("apprécié"))].sort((a, b) => b.count - a.count)[0];
+    const topNegative = [...allData.filter((d) => d.type.includes("Irritant"))].sort((a, b) => b.count - a.count)[0];
 
     // By tag for chart
     const tagMap = new Map<string, { name: string; positive: number; negative: number }>();
-    filteredData.forEach((d) => {
+    filtered.forEach((d) => {
       const key = d.tag;
       const isPos = d.type.includes("apprécié");
       const existing = tagMap.get(key);
@@ -71,7 +95,7 @@ const Index = () => {
 
     // By group
     const groupMap = new Map<string, number>();
-    filteredData.forEach((d) => {
+    filtered.forEach((d) => {
       const translated = translateGroup(d.group);
       groupMap.set(translated, (groupMap.get(translated) || 0) + d.count);
     });
@@ -81,15 +105,38 @@ const Index = () => {
 
     const groups = [...new Set(allData.map((d) => d.group))];
 
-    // Top items for filtered view
-    const topFiltered = [...filteredData].sort((a, b) => b.count - a.count).slice(0, 5);
+    const topFiltered = [...filtered].sort((a, b) => b.count - a.count).slice(0, 5);
 
     return {
-      totalMentions, posCount, negCount, topPositive, topNegative,
-      byTag, byGroup, groups,
-      filteredTotal, filteredThemes, topFiltered,
+      globalTotal, globalPos, globalNeg,
+      filteredTotal, filteredThemes, filteredPos, filteredNeg,
+      shareDenominator, shareLabel,
+      topPositive, topNegative,
+      byTag, byGroup, groups, topFiltered,
     };
-  }, [filterType]);
+  }, [filterType, filterGroup]);
+
+  const isFiltered = isTypeFiltered || isGroupFiltered;
+
+  // Title and subtitle
+  let pageTitle = "Dashboard";
+  let pageSubtitle = "Customer feedback analysis overview";
+  if (isAppreciated && isGroupFiltered) {
+    pageTitle = `Appreciated — ${translateGroup(filterGroup)}`;
+    pageSubtitle = "Positive feedback for this group";
+  } else if (isIrritant && isGroupFiltered) {
+    pageTitle = `Pain Points — ${translateGroup(filterGroup)}`;
+    pageSubtitle = "Areas of frustration in this group";
+  } else if (isAppreciated) {
+    pageTitle = "What Customers Love";
+    pageSubtitle = "Positive feedback highlights";
+  } else if (isIrritant) {
+    pageTitle = "Customer Pain Points";
+    pageSubtitle = "Areas needing improvement";
+  } else if (isGroupFiltered) {
+    pageTitle = translateGroup(filterGroup);
+    pageSubtitle = "All feedback for this group";
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -127,84 +174,53 @@ const Index = () => {
 
         <main className="px-8 py-6 max-w-6xl">
           <div className="mb-6">
-            <h1 className="text-xl font-semibold text-foreground">
-              {isAppreciated ? "What Customers Love" : isIrritant ? "Customer Pain Points" : "Dashboard"}
-            </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {isAppreciated
-                ? "Positive feedback highlights — what you're doing well"
-                : isIrritant
-                ? "Areas of frustration — where customers want improvement"
-                : "Customer feedback analysis overview"}
-            </p>
+            <h1 className="text-xl font-semibold text-foreground">{pageTitle}</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">{pageSubtitle}</p>
           </div>
 
-          {/* KPIs — adapt to filter */}
+          {/* KPIs */}
           <div className="bg-card rounded-xl border border-border p-5 mb-5">
             {!isFiltered ? (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                <KPICard
-                  title="Total Mentions"
-                  value={stats.totalMentions}
-                  icon={MessageSquare}
-                  subtitle={`${allData.length} themes`}
-                />
-                <KPICard
-                  title="Appreciated"
-                  value={stats.posCount}
-                  icon={ThumbsUp}
-                  trend="positive"
-                  subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
-                />
-                <KPICard
-                  title="Irritants"
-                  value={stats.negCount}
-                  icon={ThumbsDown}
-                  trend="negative"
-                  subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
-                />
-                <KPICard
-                  title="Positive Ratio"
-                  value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
-                  icon={BarChart3}
-                  trend="positive"
-                  subtitle="Satisfaction score"
-                />
+                <KPICard title="Total Mentions" value={stats.globalTotal} icon={MessageSquare} subtitle={`${allData.length} themes`} />
+                <KPICard title="Appreciated" value={stats.globalPos} icon={ThumbsUp} trend="positive" subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`} />
+                <KPICard title="Irritants" value={stats.globalNeg} icon={ThumbsDown} trend="negative" subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`} />
+                <KPICard title="Positive Ratio" value={`${((stats.globalPos / stats.globalTotal) * 100).toFixed(1)}%`} icon={BarChart3} trend="positive" subtitle="Satisfaction score" />
               </div>
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                 <KPICard
-                  title={isAppreciated ? "Appreciated Mentions" : "Irritant Mentions"}
+                  title={isAppreciated ? "Appreciated Mentions" : isIrritant ? "Irritant Mentions" : "Mentions"}
                   value={stats.filteredTotal}
-                  icon={isAppreciated ? ThumbsUp : ThumbsDown}
-                  trend={isAppreciated ? "positive" : "negative"}
+                  icon={isAppreciated ? ThumbsUp : isIrritant ? ThumbsDown : MessageSquare}
+                  trend={isAppreciated ? "positive" : isIrritant ? "negative" : "neutral"}
                   subtitle={`${stats.filteredThemes} themes`}
                 />
                 <KPICard
-                  title="Share of Total"
-                  value={`${((stats.filteredTotal / stats.totalMentions) * 100).toFixed(1)}%`}
+                  title="Share"
+                  value={`${((stats.filteredTotal / stats.shareDenominator) * 100).toFixed(1)}%`}
                   icon={BarChart3}
-                  subtitle={`of ${stats.totalMentions.toLocaleString()} total mentions`}
+                  subtitle={stats.shareLabel}
                 />
                 <KPICard
-                  title={isAppreciated ? "Top Strength" : "Top Pain Point"}
+                  title={isAppreciated ? "Top Strength" : isIrritant ? "Top Pain Point" : "Top Theme"}
                   value={translateTag(stats.topFiltered[0]?.tag || "")}
-                  icon={isAppreciated ? TrendingUp : TrendingDown}
+                  icon={isAppreciated ? TrendingUp : isIrritant ? TrendingDown : TrendingUp}
                   subtitle={`${stats.topFiltered[0]?.count.toLocaleString() || 0} mentions`}
                 />
               </div>
             )}
           </div>
 
-          {/* Sentiment bar — only show when unfiltered */}
-          {!isFiltered && (
+          {/* Sentiment bar — only unfiltered by type */}
+          {!isTypeFiltered && (
             <div className="mb-5">
-              <SentimentBar positive={stats.posCount} negative={stats.negCount} />
+              <SentimentBar positive={stats.filteredPos} negative={stats.filteredNeg} />
             </div>
           )}
 
-          {/* Top items summary when filtered */}
-          {isFiltered && (
+          {/* Top items when type-filtered */}
+          {isTypeFiltered && (
             <div className="bg-card rounded-xl border border-border p-5 mb-5">
               <h3 className="text-sm font-semibold text-foreground mb-4">
                 {isAppreciated ? "Top Appreciated Themes" : "Top Irritant Themes"}
@@ -232,7 +248,7 @@ const Index = () => {
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
             <TypeBreakdownChart data={stats.byTag} />
-            <GroupDonutChart data={stats.byGroup} />
+            {!isGroupFiltered && <GroupDonutChart data={stats.byGroup} />}
           </div>
 
           {/* Explorer */}
