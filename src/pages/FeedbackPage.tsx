@@ -214,14 +214,14 @@ const FeedbackPage = () => {
           </button>
 
           <p className="text-sm text-muted-foreground">
-            {isConnecting
-              ? "Connecting..."
-              : isConnected
-                ? isSpeaking
-                  ? "Agent is speaking..."
-                  : "Listening — tap to end"
-                : "Tap to start"}
+            {statusMessage}
           </p>
+
+          {conversationEnded && !submitting && !submitted && !error && (
+            <p className="text-xs text-muted-foreground">
+              We ended the call and are waiting for your feedback to be saved.
+            </p>
+          )}
 
           {submitting && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
