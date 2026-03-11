@@ -17,8 +17,10 @@ const FeedbackPage = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [conversationEnded, setConversationEnded] = useState(false);
   const [parsedEntries, setParsedEntries] = useState<ParsedEntry[]>([]);
   const [error, setError] = useState("");
+  const [statusMessage, setStatusMessage] = useState("Tap to start");
   const transcriptRef = useRef("");
 
   const conversation = useConversation({
