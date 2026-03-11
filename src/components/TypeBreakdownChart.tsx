@@ -47,7 +47,7 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
             <Legend
               formatter={(value: string) => (
                 <span className="text-muted-foreground text-xs">
-                  {value === "positive" ? "Appreciated" : "Irritant"}
+                  {value === "positive" ? "Positive" : "Negative"}
                 </span>
               )}
             />
