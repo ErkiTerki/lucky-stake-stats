@@ -75,10 +75,29 @@ export const tagTranslations: Record<string, string> = {
 export const typeTranslations: Record<string, string> = {
   "Élément apprécié / Coup de coeur": "Positive",
   "Irritant / Point de rupture": "Negative",
+  "Irritant / Point de douleur": "Negative",
+};
+
+export const groupTranslationsExtended: Record<string, string> = {
+  ...groupTranslations,
+  "Se restaurer": "Dining",
+  "Être reconnu et récompensé": "Loyalty & Rewards",
+  "Être bien accueilli et accompagné": "Service & Hospitality",
+  "Séjourner et se détendre": "Stay & Relaxation",
+  "Accéder facilement au site": "Access & Logistics",
+  "Terminer sa visite": "End of Visit",
+  "Arriver (extérieur/intérieur)": "Arrival",
+  "Prendre une pause": "Taking a Break",
+  "Explorer/Déclencher": "Explore / Trigger",
+  "Profiter des privilèges HM": "VIP Privileges",
+  "Débuter sa visite": "Start of Visit",
+  "Se déplacer": "Getting Around",
+  "Gagner": "Winning",
+  "Quitter": "Leaving",
 };
 
 export function translateGroup(group: string): string {
-  return groupTranslations[group] || group;
+  return groupTranslationsExtended[group] || groupTranslations[group] || group;
 }
 
 export function translateTag(tag: string): string {
