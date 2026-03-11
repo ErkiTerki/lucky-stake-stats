@@ -21,6 +21,7 @@ interface FeedbackEntry {
 const LastReviewPage = () => {
   const [entry, setEntry] = useState<FeedbackEntry | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
