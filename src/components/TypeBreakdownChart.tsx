@@ -27,8 +27,8 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="glass-card p-6"
     >
-      <h3 className="text-lg font-semibold mb-1">Par catégorie</h3>
-      <p className="text-muted-foreground text-sm mb-6">Répartition des retours par thème</p>
+      <h3 className="text-lg font-semibold mb-1">By Category</h3>
+      <p className="text-muted-foreground text-sm mb-6">Feedback breakdown by theme</p>
       <div className="h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 20, right: 20 }}>
