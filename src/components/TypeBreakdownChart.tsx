@@ -1,17 +1,29 @@
 import { motion } from "framer-motion";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+
+interface TagData {
+  name: string;
+  positive: number;
+  negative: number;
+  total: number;
+}
 
 interface TypeBreakdownProps {
-  data: { name: string; count: number; type: string }[];
+  data: TagData[];
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
+    const positive = payload.find((p: any) => p.dataKey === "positive")?.value || 0;
+    const negative = payload.find((p: any) => p.dataKey === "negative")?.value || 0;
+    const total = positive + negative;
     return (
-      <div className="glass-card p-3 border border-border text-sm">
+      <div className="glass-card p-3 border border-border text-sm space-y-1">
         <p className="text-foreground font-medium">{label}</p>
-        <p className="text-muted-foreground">
-          {payload[0].value.toLocaleString()} mentions
+        <p className="text-success">👍 {positive.toLocaleString()} appreciated</p>
+        <p className="text-destructive">👎 {negative.toLocaleString()} irritant</p>
+        <p className="text-muted-foreground border-t border-border pt-1 mt-1">
+          {total.toLocaleString()} total
         </p>
       </div>
     );
@@ -28,7 +40,7 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
       className="glass-card p-6"
     >
       <h3 className="text-lg font-semibold mb-1">By Category</h3>
-      <p className="text-muted-foreground text-sm mb-6">Feedback breakdown by theme</p>
+      <p className="text-muted-foreground text-sm mb-6">Positive vs negative feedback per theme</p>
       <div className="h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ left: 20, right: 20 }}>
@@ -42,14 +54,15 @@ const TypeBreakdownChart = ({ data }: TypeBreakdownProps) => {
               width={160}
             />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: "hsl(220, 14%, 14%)" }} />
-            <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={20}>
-              {data.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={entry.type.includes("apprécié") ? "hsl(152, 60%, 42%)" : "hsl(0, 72%, 55%)"}
-                />
-              ))}
-            </Bar>
+            <Legend
+              formatter={(value: string) => (
+                <span className="text-secondary-foreground text-sm">
+                  {value === "positive" ? "Appreciated" : "Irritant"}
+                </span>
+              )}
+            />
+            <Bar dataKey="positive" stackId="a" fill="hsl(152, 60%, 42%)" radius={[0, 0, 0, 0]} barSize={20} />
+            <Bar dataKey="negative" stackId="a" fill="hsl(0, 72%, 55%)" radius={[0, 6, 6, 0]} barSize={20} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -33,17 +33,26 @@ const Index = () => {
     const topPositive = [...positive].sort((a, b) => b.count - a.count)[0];
     const topNegative = [...negative].sort((a, b) => b.count - a.count)[0];
 
-    const tagMap = new Map<string, { name: string; count: number; type: string }>();
+    const tagMap = new Map<string, { name: string; positive: number; negative: number }>();
     data.forEach((d) => {
       const key = d.tag;
       const existing = tagMap.get(key);
+      const isPositive = d.type.includes("apprécié");
       if (existing) {
-        existing.count += d.count;
+        if (isPositive) existing.positive += d.count;
+        else existing.negative += d.count;
       } else {
-        tagMap.set(key, { name: translateTag(d.tag), count: d.count, type: d.type });
+        tagMap.set(key, {
+          name: translateTag(d.tag),
+          positive: isPositive ? d.count : 0,
+          negative: isPositive ? 0 : d.count,
+        });
       }
     });
-    const byTag = [...tagMap.values()].sort((a, b) => b.count - a.count).slice(0, 10);
+    const byTag = [...tagMap.values()]
+      .map((t) => ({ ...t, total: t.positive + t.negative }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 10);
 
     const groupMap = new Map<string, number>();
     data.forEach((d) => {
