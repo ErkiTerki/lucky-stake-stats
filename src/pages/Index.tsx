@@ -122,7 +122,7 @@ const Index = () => {
   let pageTitle = "Dashboard";
   let pageSubtitle = "Customer feedback analysis overview";
   if (isAppreciated && isGroupFiltered) {
-    pageTitle = `Appreciated — ${translateGroup(filterGroup)}`;
+    pageTitle = `Positive — ${translateGroup(filterGroup)}`;
     pageSubtitle = "Positive feedback for this group";
   } else if (isIrritant && isGroupFiltered) {
     pageTitle = `Pain Points — ${translateGroup(filterGroup)}`;
