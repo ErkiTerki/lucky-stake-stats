@@ -1,4 +1,4 @@
-import { LayoutDashboard, MessageCircle, Swords, Lightbulb } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Swords, Lightbulb, ClipboardList } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
