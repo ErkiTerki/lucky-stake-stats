@@ -64,21 +64,18 @@ const FeedbackPage = () => {
     if (!text.trim() || submitting) return;
     setSubmitting(true);
     setError("");
+    setStatusMessage("Saving your feedback...");
+
     try {
-      const resp = await fetch(PARSE_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ transcript: text }),
+      const { data, error } = await supabase.functions.invoke("parse-feedback", {
+        body: { transcript: text },
       });
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to process feedback");
+
+      if (error) {
+        throw new Error(error.message || "Failed to process feedback");
       }
-      const data = await resp.json();
-      if (data.entries && data.entries.length > 0) {
+
+      if (data?.entries && data.entries.length > 0) {
         setParsedEntries(data.entries.map((e: any) => ({
           type: e.type,
           group: e.group,
@@ -86,11 +83,15 @@ const FeedbackPage = () => {
           long_description: e.long_description,
         })));
       }
+
       setSubmitted(true);
+      setStatusMessage("Feedback saved successfully");
     } catch (e: any) {
       console.error("Submit error:", e);
       setError(e.message || "Something went wrong. Please try again.");
+      setStatusMessage("Saving failed");
     }
+
     setSubmitting(false);
   };
 
