@@ -296,7 +296,7 @@ const CompetitorsPage = () => {
                     <span className={`text-[10px] font-medium uppercase px-1.5 py-0.5 rounded ${
                       item.type.includes("apprécié") ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
                     }`}>
-                      {item.type.includes("apprécié") ? "Favorable" : "Unfavorable"}
+                      {item.type.includes("apprécié") ? "Positive" : "Negative"}
                     </span>
                     <span className="text-xs font-medium text-foreground">{translateTag(item.tag)}</span>
                     <span className="text-xs text-muted-foreground">· {translateGroup(item.group)}</span>
