@@ -62,7 +62,7 @@ const Index = () => {
       shareLabel = "of all Positive";
     } else if (isIrritant && isGroupFiltered) {
       shareDenominator = globalNeg;
-      shareLabel = "of all Irritants";
+      shareLabel = "of all Negative";
     } else if (isGroupFiltered) {
       shareDenominator = globalTotal;
       shareLabel = "of all mentions";
