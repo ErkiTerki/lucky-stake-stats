@@ -2,3 +2,9 @@ project_id = "mgauocgpdzpmwdifquov"
 
 [functions.chat]
 verify_jwt = false
+
+[functions.parse-feedback]
+verify_jwt = false
+
+[functions.strategy]
+verify_jwt = false
