@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 interface SentimentBarProps {
   positive: number;
   negative: number;
@@ -11,37 +9,19 @@ const SentimentBar = ({ positive, negative }: SentimentBarProps) => {
   const negPercent = (negative / total) * 100;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.15 }}
-      className="glass-card p-6"
-    >
-      <h3 className="text-lg font-semibold mb-1">Overall Sentiment</h3>
-      <p className="text-muted-foreground text-sm mb-4">Appreciated vs irritant ratio</p>
-      <div className="flex rounded-full overflow-hidden h-4 bg-secondary">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${posPercent}%` }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="bg-success h-full"
-        />
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${negPercent}%` }}
-          transition={{ duration: 1, delay: 0.7 }}
-          className="bg-destructive h-full"
-        />
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-medium text-foreground">Overall Sentiment</h3>
       </div>
-      <div className="flex justify-between mt-3 text-sm">
-        <span className="text-success font-medium">
-          👍 {posPercent.toFixed(1)}% appreciated ({positive.toLocaleString()})
-        </span>
-        <span className="text-destructive font-medium">
-          👎 {negPercent.toFixed(1)}% irritant ({negative.toLocaleString()})
-        </span>
+      <div className="flex rounded-full overflow-hidden h-2 bg-muted">
+        <div className="bg-success h-full transition-all" style={{ width: `${posPercent}%` }} />
+        <div className="bg-destructive h-full transition-all" style={{ width: `${negPercent}%` }} />
       </div>
-    </motion.div>
+      <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+        <span>{posPercent.toFixed(1)}% appreciated ({positive.toLocaleString()})</span>
+        <span>{negPercent.toFixed(1)}% irritant ({negative.toLocaleString()})</span>
+      </div>
+    </div>
   );
 };
 

@@ -36,16 +36,16 @@ const Index = () => {
     const tagMap = new Map<string, { name: string; positive: number; negative: number }>();
     data.forEach((d) => {
       const key = d.tag;
+      const isPos = d.type.includes("apprécié");
       const existing = tagMap.get(key);
-      const isPositive = d.type.includes("apprécié");
       if (existing) {
-        if (isPositive) existing.positive += d.count;
+        if (isPos) existing.positive += d.count;
         else existing.negative += d.count;
       } else {
         tagMap.set(key, {
           name: translateTag(d.tag),
-          positive: isPositive ? d.count : 0,
-          negative: isPositive ? 0 : d.count,
+          positive: isPos ? d.count : 0,
+          negative: isPos ? 0 : d.count,
         });
       }
     });
@@ -70,46 +70,44 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border px-6 py-5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Casino Analytics</h1>
-            <p className="text-muted-foreground text-sm mt-0.5">
-              Customer feedback analysis — aggregated data
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="bg-secondary text-secondary-foreground text-sm rounded-lg px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="all">All types</option>
-              <option value="apprécié">Appreciated</option>
-              <option value="irritant">Irritants</option>
-            </select>
-            <select
-              value={filterGroup}
-              onChange={(e) => setFilterGroup(e.target.value)}
-              className="bg-secondary text-secondary-foreground text-sm rounded-lg px-3 py-2 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="all">All groups</option>
-              {stats.groups.map((g) => (
-                <option key={g} value={g}>{translateGroup(g)}</option>
-              ))}
-            </select>
-          </div>
+      <header className="px-8 pt-10 pb-6">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-xl font-semibold text-foreground">Casino Analytics</h1>
+          <p className="text-sm text-muted-foreground mt-1">Customer feedback analysis</p>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <main className="max-w-5xl mx-auto px-8 pb-16">
+        {/* Filters */}
+        <div className="flex items-center gap-3 mb-8">
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="bg-background text-foreground text-xs rounded-md px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+          >
+            <option value="all">All types</option>
+            <option value="apprécié">Appreciated</option>
+            <option value="irritant">Irritants</option>
+          </select>
+          <select
+            value={filterGroup}
+            onChange={(e) => setFilterGroup(e.target.value)}
+            className="bg-background text-foreground text-xs rounded-md px-3 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+          >
+            <option value="all">All groups</option>
+            {stats.groups.map((g) => (
+              <option key={g} value={g}>{translateGroup(g)}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* KPIs */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border-b border-border mb-10">
           <KPICard
             title="Total mentions"
             value={stats.totalMentions}
             icon={MessageSquare}
-            subtitle={`${data.length} themes identified`}
-            delay={0}
+            subtitle={`${data.length} themes`}
           />
           <KPICard
             title="Appreciated"
@@ -117,7 +115,6 @@ const Index = () => {
             icon={ThumbsUp}
             trend="positive"
             subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
-            delay={0.05}
           />
           <KPICard
             title="Irritants"
@@ -125,25 +122,30 @@ const Index = () => {
             icon={ThumbsDown}
             trend="negative"
             subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
-            delay={0.1}
           />
           <KPICard
             title="Positive ratio"
             value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
             icon={BarChart3}
             subtitle="Satisfaction score"
-            delay={0.15}
           />
         </div>
 
-        <SentimentBar positive={stats.posCount} negative={stats.negCount} />
+        {/* Sentiment */}
+        <div className="mb-12">
+          <SentimentBar positive={stats.posCount} negative={stats.negCount} />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
           <TypeBreakdownChart data={stats.byTag} />
           <GroupDonutChart data={stats.byGroup} />
         </div>
 
-        <TagExplorer data={data} filterType={filterType} filterGroup={filterGroup} />
+        {/* Explorer */}
+        <div className="border-t border-border pt-8">
+          <TagExplorer data={data} filterType={filterType} filterGroup={filterGroup} />
+        </div>
       </main>
     </div>
   );

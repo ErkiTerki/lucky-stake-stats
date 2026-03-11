@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ThumbsUp, ThumbsDown } from "lucide-react";
-import { translateTag, translateGroup, translateType } from "@/lib/translations";
+import { ChevronRight, ThumbsUp, ThumbsDown } from "lucide-react";
+import { translateTag, translateGroup } from "@/lib/translations";
 
 interface FeedbackItem {
   type: string;
@@ -30,87 +29,64 @@ const TagExplorer = ({ data, filterType, filterGroup }: TagExplorerProps) => {
   const sorted = [...filtered].sort((a, b) => b.count - a.count);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.4 }}
-      className="glass-card p-6"
-    >
-      <h3 className="text-lg font-semibold mb-1">Theme Explorer</h3>
-      <p className="text-muted-foreground text-sm mb-6">
-        {sorted.length} themes found — click to see details
-      </p>
-      <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="text-sm font-medium text-foreground">Theme Explorer</h3>
+        <span className="text-xs text-muted-foreground">{sorted.length} themes</span>
+      </div>
+      <p className="text-xs text-muted-foreground mb-5">Click to expand details</p>
+      <div className="space-y-px max-h-[480px] overflow-y-auto">
         {sorted.map((item) => {
           const key = `${item.type}-${item.group}-${item.tag}-${item.count}`;
           const isExpanded = expandedTag === key;
           const isPositive = item.type.includes("apprécié");
 
           return (
-            <div key={key} className="border border-border rounded-lg overflow-hidden">
+            <div key={key}>
               <button
                 onClick={() => setExpandedTag(isExpanded ? null : key)}
-                className="w-full flex items-center gap-3 p-4 hover:bg-secondary/50 transition-colors text-left"
+                className="w-full flex items-center gap-3 py-2.5 px-1 hover:bg-muted/50 transition-colors text-left rounded-md group"
               >
-                <div className={`p-1.5 rounded-md ${isPositive ? "bg-success/10" : "bg-destructive/10"}`}>
-                  {isPositive ? (
-                    <ThumbsUp className="w-4 h-4 text-success" />
-                  ) : (
-                    <ThumbsDown className="w-4 h-4 text-destructive" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">{translateTag(item.tag)}</span>
-                    <span className="text-xs text-muted-foreground px-2 py-0.5 bg-secondary rounded-full">
-                      {translateGroup(item.group)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground truncate mt-0.5">
-                    {item.longDescription}
-                  </p>
-                </div>
-                <span className="font-mono text-sm text-primary font-semibold">
-                  {item.count.toLocaleString()}
-                </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-muted-foreground transition-transform ${
-                    isExpanded ? "rotate-180" : ""
+                <ChevronRight
+                  className={`w-3.5 h-3.5 text-muted-foreground transition-transform flex-shrink-0 ${
+                    isExpanded ? "rotate-90" : ""
                   }`}
                 />
-              </button>
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="px-4 pb-4 space-y-2 border-t border-border pt-3">
-                      {item.children.map((child, i) => (
-                        <div
-                          key={i}
-                          className="flex items-start gap-3 text-sm"
-                        >
-                          <span className="font-mono text-xs text-primary bg-primary/10 px-2 py-1 rounded flex-shrink-0">
-                            {child.count.toLocaleString()}
-                          </span>
-                          <p className="text-secondary-foreground leading-relaxed">
-                            {child.long_description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
+                {isPositive ? (
+                  <ThumbsUp className="w-3.5 h-3.5 text-success flex-shrink-0" />
+                ) : (
+                  <ThumbsDown className="w-3.5 h-3.5 text-destructive flex-shrink-0" />
                 )}
-              </AnimatePresence>
+                <span className="text-sm text-foreground flex-1 truncate">
+                  {translateTag(item.tag)}
+                </span>
+                <span className="text-xs text-muted-foreground hidden sm:inline">
+                  {translateGroup(item.group)}
+                </span>
+                <span className="font-mono text-xs text-foreground tabular-nums">
+                  {item.count.toLocaleString()}
+                </span>
+              </button>
+              {isExpanded && (
+                <div className="ml-10 pb-3 space-y-2 pt-1">
+                  <p className="text-xs text-muted-foreground">{item.longDescription}</p>
+                  {item.children.map((child, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs">
+                      <span className="font-mono text-primary bg-primary/5 px-1.5 py-0.5 rounded text-[11px] flex-shrink-0">
+                        {child.count.toLocaleString()}
+                      </span>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {child.long_description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
