@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import { Mic, MicOff, Phone } from "lucide-react";
 
 const PARSE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parse-feedback`;
-const AGENT_ID = "agent_8501kkf2b8qefkgs7fsggrk7b1gm";
+const TOKEN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-token`;
 
 const FeedbackPage = () => {
   const [isConnecting, setIsConnecting] = useState(false);
