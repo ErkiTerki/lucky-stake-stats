@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ThumbsUp, ThumbsDown } from "lucide-react";
+import { translateTag, translateGroup, translateType } from "@/lib/translations";
 
 interface FeedbackItem {
   type: string;
@@ -60,9 +61,9 @@ const TagExplorer = ({ data, filterType, filterGroup }: TagExplorerProps) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">{item.tag}</span>
+                    <span className="font-medium text-foreground">{translateTag(item.tag)}</span>
                     <span className="text-xs text-muted-foreground px-2 py-0.5 bg-secondary rounded-full">
-                      {item.group}
+                      {translateGroup(item.group)}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground truncate mt-0.5">
