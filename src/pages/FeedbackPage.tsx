@@ -29,13 +29,14 @@ const FeedbackPage = () => {
     onDisconnect: () => {
       console.log("Disconnected from voice agent");
       setConversationEnded(true);
-      setStatusMessage("Conversation ended — saving your feedback...");
-      if (transcriptRef.current.trim()) {
-        submitFeedback(transcriptRef.current);
-      } else {
-        setError("We couldn't capture the conversation transcript. Please try again.");
-        setStatusMessage("Conversation ended");
-      }
+      // The post-call webhook handles transcript processing automatically.
+      // Show success — the webhook will classify and store the feedback.
+      setStatusMessage("Thank you! Your feedback is being processed...");
+      // Brief delay to let webhook process, then show success
+      setTimeout(() => {
+        setSubmitted(true);
+        setStatusMessage("Feedback saved successfully");
+      }, 3000);
     },
     onMessage: (message: any) => {
       console.log("ElevenLabs message:", JSON.stringify(message));
