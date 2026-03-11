@@ -190,7 +190,7 @@ const Index = () => {
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                 <KPICard
-                  title={isAppreciated ? "Appreciated Mentions" : isIrritant ? "Irritant Mentions" : "Mentions"}
+                  title={isAppreciated ? "Positive Mentions" : isIrritant ? "Negative Mentions" : "Mentions"}
                   value={stats.filteredTotal}
                   icon={isAppreciated ? ThumbsUp : isIrritant ? ThumbsDown : MessageSquare}
                   trend={isAppreciated ? "positive" : isIrritant ? "negative" : "neutral"}
