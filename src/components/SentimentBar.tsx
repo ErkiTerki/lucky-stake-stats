@@ -18,11 +18,11 @@ const SentimentBar = ({ positive, negative }: SentimentBarProps) => {
       <div className="flex justify-between mt-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full" style={{ background: "hsl(var(--chart-positive))" }} />
-          {posPercent.toFixed(1)}% appreciated ({positive.toLocaleString()})
+          {posPercent.toFixed(1)}% Appreciated ({positive.toLocaleString()})
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full" style={{ background: "hsl(var(--chart-negative))" }} />
-          {negPercent.toFixed(1)}% irritant ({negative.toLocaleString()})
+          {negPercent.toFixed(1)}% Irritant ({negative.toLocaleString()})
         </div>
       </div>
     </div>
