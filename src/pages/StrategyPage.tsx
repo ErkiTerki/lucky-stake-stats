@@ -188,7 +188,7 @@ const StrategyPage = () => {
                           <Icon className={`w-3.5 h-3.5 ${iconColor}`} />
                         </div>
                         <h3 className="text-sm font-semibold text-foreground">
-                          {section.emoji} {section.title}
+                          {section.title}
                         </h3>
                       </div>
                       <div className="prose prose-sm prose-neutral max-w-none [&_p]:text-sm [&_li]:text-sm [&_strong]:text-foreground [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1 [&_li]:my-0.5">
