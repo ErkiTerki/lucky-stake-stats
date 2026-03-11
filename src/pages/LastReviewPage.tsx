@@ -157,9 +157,9 @@ const LastReviewPage = () => {
                   Sentiment
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+               <CardContent>
                 <Badge variant={isPositive ? "default" : "destructive"} className="text-sm">
-                  {entry.type}
+                  {translateType(entry.type)}
                 </Badge>
               </CardContent>
             </Card>
