@@ -97,7 +97,7 @@ const LastReviewPage = () => {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center gap-2">
-                  {isPositive ? <ThumbsUp className="w-4 h-4 text-emerald-500" /> : <ThumbsDown className="w-4 h-4 text-rose-500" />}
+                  {isPositive ? <ThumbsUp className="w-4 h-4 text-primary" /> : <ThumbsDown className="w-4 h-4 text-destructive" />}
                   Sentiment
                 </CardTitle>
               </CardHeader>

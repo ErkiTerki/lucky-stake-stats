@@ -3,9 +3,6 @@ import { useState, useCallback, useRef } from "react";
 import { Mic, Phone, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const PARSE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parse-feedback`;
-const TOKEN_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-token`;
-
 interface ParsedEntry {
   type: string;
   group: string;
