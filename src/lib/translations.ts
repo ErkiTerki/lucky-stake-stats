@@ -73,8 +73,8 @@ export const tagTranslations: Record<string, string> = {
 };
 
 export const typeTranslations: Record<string, string> = {
-  "Élément apprécié / Coup de coeur": "Appreciated / Highlight",
-  "Irritant / Point de rupture": "Irritant / Pain Point",
+  "Élément apprécié / Coup de coeur": "Positive",
+  "Irritant / Point de rupture": "Negative",
 };
 
 export function translateGroup(group: string): string {
