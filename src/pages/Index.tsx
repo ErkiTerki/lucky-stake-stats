@@ -6,6 +6,7 @@ import SentimentBar from "@/components/SentimentBar";
 import TypeBreakdownChart from "@/components/TypeBreakdownChart";
 import GroupDonutChart from "@/components/GroupDonutChart";
 import TagExplorer from "@/components/TagExplorer";
+import { translateGroup, translateTag } from "@/lib/translations";
 
 interface FeedbackItem {
   type: string;
@@ -39,14 +40,15 @@ const Index = () => {
       if (existing) {
         existing.count += d.count;
       } else {
-        tagMap.set(key, { name: d.tag, count: d.count, type: d.type });
+        tagMap.set(key, { name: translateTag(d.tag), count: d.count, type: d.type });
       }
     });
     const byTag = [...tagMap.values()].sort((a, b) => b.count - a.count).slice(0, 10);
 
     const groupMap = new Map<string, number>();
     data.forEach((d) => {
-      groupMap.set(d.group, (groupMap.get(d.group) || 0) + d.count);
+      const translated = translateGroup(d.group);
+      groupMap.set(translated, (groupMap.get(translated) || 0) + d.count);
     });
     const byGroup = [...groupMap.entries()]
       .map(([name, value]) => ({ name, value }))
@@ -84,7 +86,7 @@ const Index = () => {
             >
               <option value="all">All groups</option>
               {stats.groups.map((g) => (
-                <option key={g} value={g}>{g}</option>
+                <option key={g} value={g}>{translateGroup(g)}</option>
               ))}
             </select>
           </div>
@@ -105,7 +107,7 @@ const Index = () => {
             value={stats.posCount}
             icon={ThumbsUp}
             trend="positive"
-            subtitle={`Top: ${stats.topPositive?.tag}`}
+            subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
             delay={0.05}
           />
           <KPICard
@@ -113,7 +115,7 @@ const Index = () => {
             value={stats.negCount}
             icon={ThumbsDown}
             trend="negative"
-            subtitle={`Top: ${stats.topNegative?.tag}`}
+            subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
             delay={0.1}
           />
           <KPICard
