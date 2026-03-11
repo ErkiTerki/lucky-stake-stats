@@ -16,16 +16,14 @@ const sectionMeta: Record<string, { icon: typeof AlertTriangle; color: string; b
 };
 
 function parseSections(raw: string) {
-  // Split by h2/h3 headers with emoji
-  const headerRegex = /^#{1,3}\s*(🚨|⚡|🏆|📈|🎯)\s*(.+)$/gm;
-  const parts: { title: string; key: string; emoji: string; content: string }[] = [];
-  let lastIndex = 0;
+  const headerRegex = /^#{1,3}\s*(.+)$/gm;
+  const parts: { title: string; key: string; content: string }[] = [];
   let intro = "";
   let match;
-  const matches: { index: number; full: string; emoji: string; title: string }[] = [];
+  const matches: { index: number; full: string; title: string }[] = [];
 
   while ((match = headerRegex.exec(raw)) !== null) {
-    matches.push({ index: match.index, full: match[0], emoji: match[1], title: match[2].trim() });
+    matches.push({ index: match.index, full: match[0], title: match[1].replace(/[🚨⚡🏆📈🎯]/g, "").trim() });
   }
 
   if (matches.length === 0) return { intro: raw, sections: [] };
@@ -37,7 +35,7 @@ function parseSections(raw: string) {
     const end = i + 1 < matches.length ? matches[i + 1].index : raw.length;
     const content = raw.slice(start, end).trim();
     const key = matches[i].title.toLowerCase().replace(/[^a-z ]/g, "").trim();
-    parts.push({ title: matches[i].title, key, emoji: matches[i].emoji, content });
+    parts.push({ title: matches[i].title, key, content });
   }
 
   return { intro, sections: parts };
