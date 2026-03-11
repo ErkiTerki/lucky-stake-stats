@@ -70,14 +70,24 @@ const LastReviewPage = () => {
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar />
       <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex items-center justify-between gap-4 mb-8">
+          <div className="flex items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-foreground mb-1">Last Customer Review</h1>
             <p className="text-sm text-muted-foreground">Most recent voice feedback received via ElevenLabs</p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
-            Live updates enabled
+          <div className="flex items-center gap-4">
+            <a
+              href="https://id-preview--9a6fa649-bc25-4311-a59e-e238e253c658.lovable.app/feedback"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs bg-primary text-primary-foreground px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Open Feedback Form ↗
+            </a>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+              Live updates enabled
+            </div>
           </div>
         </div>
 
