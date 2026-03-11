@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { MessageSquare, ThumbsUp, ThumbsDown, BarChart3, Search } from "lucide-react";
+import { MessageSquare, ThumbsUp, ThumbsDown, BarChart3, Search, TrendingUp, TrendingDown } from "lucide-react";
 import feedbackData from "@/data/feedback.json";
 import KPICard from "@/components/KPICard";
 import SentimentBar from "@/components/SentimentBar";
@@ -18,24 +18,38 @@ interface FeedbackItem {
   children: { count: number; long_description: string }[];
 }
 
-const data = feedbackData as FeedbackItem[];
+const allData = feedbackData as FeedbackItem[];
 
 const Index = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterGroup, setFilterGroup] = useState("all");
 
+  const isFiltered = filterType !== "all";
+  const isAppreciated = filterType === "apprécié";
+  const isIrritant = filterType === "irritant";
+
   const stats = useMemo(() => {
-    const totalMentions = data.reduce((s, d) => s + d.count, 0);
-    const positive = data.filter((d) => d.type.includes("apprécié"));
-    const negative = data.filter((d) => d.type.includes("Irritant"));
+    const totalMentions = allData.reduce((s, d) => s + d.count, 0);
+    const positive = allData.filter((d) => d.type.includes("apprécié"));
+    const negative = allData.filter((d) => d.type.includes("Irritant"));
     const posCount = positive.reduce((s, d) => s + d.count, 0);
     const negCount = negative.reduce((s, d) => s + d.count, 0);
-
     const topPositive = [...positive].sort((a, b) => b.count - a.count)[0];
     const topNegative = [...negative].sort((a, b) => b.count - a.count)[0];
 
+    // Filtered data based on type
+    const filteredData = allData.filter((d) => {
+      if (filterType === "apprécié" && !d.type.includes("apprécié")) return false;
+      if (filterType === "irritant" && !d.type.includes("Irritant")) return false;
+      return true;
+    });
+
+    const filteredTotal = filteredData.reduce((s, d) => s + d.count, 0);
+    const filteredThemes = filteredData.length;
+
+    // By tag for chart
     const tagMap = new Map<string, { name: string; positive: number; negative: number }>();
-    data.forEach((d) => {
+    filteredData.forEach((d) => {
       const key = d.tag;
       const isPos = d.type.includes("apprécié");
       const existing = tagMap.get(key);
@@ -55,8 +69,9 @@ const Index = () => {
       .sort((a, b) => b.total - a.total)
       .slice(0, 10);
 
+    // By group
     const groupMap = new Map<string, number>();
-    data.forEach((d) => {
+    filteredData.forEach((d) => {
       const translated = translateGroup(d.group);
       groupMap.set(translated, (groupMap.get(translated) || 0) + d.count);
     });
@@ -64,17 +79,23 @@ const Index = () => {
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
 
-    const groups = [...new Set(data.map((d) => d.group))];
+    const groups = [...new Set(allData.map((d) => d.group))];
 
-    return { totalMentions, posCount, negCount, topPositive, topNegative, byTag, byGroup, groups };
-  }, []);
+    // Top items for filtered view
+    const topFiltered = [...filteredData].sort((a, b) => b.count - a.count).slice(0, 5);
+
+    return {
+      totalMentions, posCount, negCount, topPositive, topNegative,
+      byTag, byGroup, groups,
+      filteredTotal, filteredThemes, topFiltered,
+    };
+  }, [filterType]);
 
   return (
     <div className="flex min-h-screen bg-background">
       <DashboardSidebar />
 
       <div className="flex-1 min-w-0">
-        {/* Top bar */}
         <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3 bg-muted rounded-lg px-3 py-1.5 w-64">
             <Search className="w-3.5 h-3.5 text-muted-foreground" />
@@ -105,49 +126,108 @@ const Index = () => {
         </header>
 
         <main className="px-8 py-6 max-w-6xl">
-          {/* Page title */}
           <div className="mb-6">
-            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Customer feedback analysis overview</p>
+            <h1 className="text-xl font-semibold text-foreground">
+              {isAppreciated ? "What Customers Love" : isIrritant ? "Customer Pain Points" : "Dashboard"}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {isAppreciated
+                ? "Positive feedback highlights — what you're doing well"
+                : isIrritant
+                ? "Areas of frustration — where customers want improvement"
+                : "Customer feedback analysis overview"}
+            </p>
           </div>
 
-          {/* KPIs row */}
+          {/* KPIs — adapt to filter */}
           <div className="bg-card rounded-xl border border-border p-5 mb-5">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              <KPICard
-                title="Total Mentions"
-                value={stats.totalMentions}
-                icon={MessageSquare}
-                subtitle={`${data.length} themes`}
-              />
-              <KPICard
-                title="Appreciated"
-                value={stats.posCount}
-                icon={ThumbsUp}
-                trend="positive"
-                subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
-              />
-              <KPICard
-                title="Irritants"
-                value={stats.negCount}
-                icon={ThumbsDown}
-                trend="negative"
-                subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
-              />
-              <KPICard
-                title="Positive Ratio"
-                value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
-                icon={BarChart3}
-                trend="positive"
-                subtitle="Satisfaction score"
-              />
-            </div>
+            {!isFiltered ? (
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <KPICard
+                  title="Total Mentions"
+                  value={stats.totalMentions}
+                  icon={MessageSquare}
+                  subtitle={`${allData.length} themes`}
+                />
+                <KPICard
+                  title="Appreciated"
+                  value={stats.posCount}
+                  icon={ThumbsUp}
+                  trend="positive"
+                  subtitle={`Top: ${translateTag(stats.topPositive?.tag || "")}`}
+                />
+                <KPICard
+                  title="Irritants"
+                  value={stats.negCount}
+                  icon={ThumbsDown}
+                  trend="negative"
+                  subtitle={`Top: ${translateTag(stats.topNegative?.tag || "")}`}
+                />
+                <KPICard
+                  title="Positive Ratio"
+                  value={`${((stats.posCount / stats.totalMentions) * 100).toFixed(1)}%`}
+                  icon={BarChart3}
+                  trend="positive"
+                  subtitle="Satisfaction score"
+                />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                <KPICard
+                  title={isAppreciated ? "Appreciated Mentions" : "Irritant Mentions"}
+                  value={stats.filteredTotal}
+                  icon={isAppreciated ? ThumbsUp : ThumbsDown}
+                  trend={isAppreciated ? "positive" : "negative"}
+                  subtitle={`${stats.filteredThemes} themes`}
+                />
+                <KPICard
+                  title="Share of Total"
+                  value={`${((stats.filteredTotal / stats.totalMentions) * 100).toFixed(1)}%`}
+                  icon={BarChart3}
+                  subtitle={`of ${stats.totalMentions.toLocaleString()} total mentions`}
+                />
+                <KPICard
+                  title={isAppreciated ? "Top Strength" : "Top Pain Point"}
+                  value={translateTag(stats.topFiltered[0]?.tag || "")}
+                  icon={isAppreciated ? TrendingUp : TrendingDown}
+                  subtitle={`${stats.topFiltered[0]?.count.toLocaleString() || 0} mentions`}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Sentiment */}
-          <div className="mb-5">
-            <SentimentBar positive={stats.posCount} negative={stats.negCount} />
-          </div>
+          {/* Sentiment bar — only show when unfiltered */}
+          {!isFiltered && (
+            <div className="mb-5">
+              <SentimentBar positive={stats.posCount} negative={stats.negCount} />
+            </div>
+          )}
+
+          {/* Top items summary when filtered */}
+          {isFiltered && (
+            <div className="bg-card rounded-xl border border-border p-5 mb-5">
+              <h3 className="text-sm font-semibold text-foreground mb-4">
+                {isAppreciated ? "Top Appreciated Themes" : "Top Irritant Themes"}
+              </h3>
+              <div className="space-y-3">
+                {stats.topFiltered.map((item, i) => (
+                  <div key={`${item.tag}-${item.count}-${i}`} className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground font-mono w-5">{i + 1}.</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-foreground">{translateTag(item.tag)}</span>
+                        <span className="text-[11px] text-muted-foreground px-1.5 py-0.5 bg-muted rounded-md">
+                          {translateGroup(item.group)}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">{item.longDescription}</p>
+                    </div>
+                    <span className="font-mono text-sm font-semibold text-foreground">{item.count.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
@@ -156,7 +236,7 @@ const Index = () => {
           </div>
 
           {/* Explorer */}
-          <TagExplorer data={data} filterType={filterType} filterGroup={filterGroup} />
+          <TagExplorer data={allData} filterType={filterType} filterGroup={filterGroup} />
         </main>
       </div>
     </div>
