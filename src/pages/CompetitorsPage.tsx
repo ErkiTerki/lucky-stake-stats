@@ -270,14 +270,14 @@ const CompetitorsPage = () => {
             </h2>
             <div className="space-y-3">
               {[
-                { icon: "🎰", text: `Slot machine payouts are the #1 competitive concern — ${analysis.weaknesses.find(w => w.theme.includes("MAS") || w.theme.includes("Machine"))?.neg || "many"} mentions cite lower returns vs. other venues.` },
-                { icon: "🍹", text: "Complimentary drinks are a recurring request — customers explicitly reference Las Vegas and Rival Palace as benchmarks." },
-                { icon: "💰", text: "Promotions and loyalty rewards are perceived as less generous than competitors, directly impacting repeat visits." },
-                { icon: "✅", text: `Your strengths lie in ${analysis.strengths.slice(0, 2).map(s => translateTag(s.theme).toLowerCase()).join(" and ") || "overall experience"} — protect these advantages.` },
-              ].map((item, i) => (
+                `Slot machine payouts are the #1 competitive concern — ${analysis.weaknesses.find(w => w.theme.includes("MAS") || w.theme.includes("Machine"))?.neg || "many"} mentions cite lower returns vs. other venues.`,
+                "Complimentary drinks are a recurring request — customers explicitly reference Las Vegas and Rival Palace as benchmarks.",
+                "Promotions and loyalty rewards are perceived as less generous than competitors, directly impacting repeat visits.",
+                `Your strengths lie in ${analysis.strengths.slice(0, 2).map(s => translateTag(s.theme).toLowerCase()).join(" and ") || "overall experience"} — protect these advantages.`,
+              ].map((text, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <span className="text-base flex-shrink-0 mt-0.5">{item.icon}</span>
-                  <p className="text-sm text-foreground leading-relaxed">{item.text}</p>
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0 mt-1.5" />
+                  <p className="text-sm text-foreground leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>
