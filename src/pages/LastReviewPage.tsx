@@ -22,8 +22,6 @@ const LastReviewPage = () => {
   const [entry, setEntry] = useState<FeedbackEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [translatedDescription, setTranslatedDescription] = useState<string>("");
-  const [isTranslating, setIsTranslating] = useState(false);
 
   useEffect(() => {
     const fetchLatestEntry = async (showRefreshingState = false) => {
