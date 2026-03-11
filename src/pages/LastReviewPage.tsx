@@ -30,7 +30,7 @@ const LastReviewPage = () => {
       const { data } = await supabase
         .from("feedback_entries")
         .select("*")
-        .order("created_at", { ascending: false })
+        .order("created_at", { ascending: false, nullsFirst: false })
         .limit(1);
 
       if (data && data.length > 0) {

@@ -226,7 +226,7 @@ const FeedbackPage = () => {
           {submitting && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
-              Processing your feedback...
+              Registering your feedback and updating the dashboard...
             </div>
           )}
 
